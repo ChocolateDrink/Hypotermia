@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	debugging    bool = true
+	debugging    bool = false
 	hideFolder   bool = true
 	addToStartup bool = true
 )
