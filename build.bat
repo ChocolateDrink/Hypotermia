@@ -31,5 +31,6 @@ if %errorlevel% neq 0 (
 
 color 0A
 echo Hypotermia built successfully
+cls
 
 color 07
