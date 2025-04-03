@@ -19,7 +19,7 @@ const (
 
 	evalNoOutput   string = "🟨 No output from command."
 	evalGoodOutput string = "🟩 Success in running command."
-	evalBadOutput  string = "🟥 Error in running command."
+	evalBadOutput  string = "🟥 Failed to run command."
 )
 
 type EvalCommand struct{}
