@@ -34,13 +34,9 @@ func SetRegistry(path string, key string, value string) error {
 	return nil
 }
 
-func GetRegistry(path string, key string, value string) (string, error) {
+func GetRegistry(path string, key string) (string, error) {
 	if len(key) == 0 {
 		return "", fmt.Errorf("key is empty")
-	}
-
-	if len(value) == 0 {
-		return "", fmt.Errorf("value is empty")
 	}
 
 	handle, err := registry.OpenKey(
@@ -60,4 +56,28 @@ func GetRegistry(path string, key string, value string) (string, error) {
 	}
 
 	return val, nil
+}
+
+func DelRegistry(path string, key string) error {
+	if len(key) == 0 {
+		return fmt.Errorf("key is empty")
+	}
+
+	handle, err := registry.OpenKey(
+		registry.CURRENT_USER,
+		path, registry.ALL_ACCESS,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	defer handle.Close()
+
+	err = handle.DeleteValue(key)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
