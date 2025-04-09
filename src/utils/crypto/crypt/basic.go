@@ -16,6 +16,7 @@ func EncryptBasic(text string) string {
 	for _, char := range text {
 		newChar := rune(int32(char) + int32(shift))
 		encrypted = append(encrypted, newChar)
+		shift++
 	}
 
 	return string(encrypted)
@@ -28,6 +29,7 @@ func DecryptBasic(text string) string {
 	for _, char := range text {
 		newChar := rune(int32(char) - int32(shift))
 		decrypted = append(decrypted, newChar)
+		shift++
 	}
 
 	decryptedStr := string(decrypted)
