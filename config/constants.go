@@ -14,9 +14,9 @@ const (
 	// bot stuff
 	Prefix string = ">"
 
-	BotToken   string = "ŷžũũũũũũũƤƕƢŹžųŜŸƤųƣŹžƍŝŹūƆƐƑũũũũũşşşşűŵŝŢŠŰƆƐƑƐƑƐũũũũşşƓŬƏŚƍƔůƄũŸƃźūƆşşƐũũƐƐşƐũũũũŢŚůŻƖƌƣŠŞƝƢŠŻƃƢƕſũũũŲŞ"
-	ServerId   string = "ũŝşŠŞŠţũũŢŞŞşũŢŞũũũ"
-	CategoryId string = "śŝşũũŜšŝšŠũũũũũũũũũ"
+	BotToken   string = ""
+	ServerId   string = ""
+	CategoryId string = ""
 
 	FakeToken    string = "MTAzMjg4Mjk1MDg2NzA5ODg2MA.GSFXy6.4BwrWVdsyL3H8edw8lb77sdeEqlRygtrdh"
 	FakeServer   string = "3274623486732456723"
