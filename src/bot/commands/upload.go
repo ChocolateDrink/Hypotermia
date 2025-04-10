@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"Hypotermia/src/utils"
+	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
 )

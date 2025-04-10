@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"Hypotermia/config"
+	"Hypothermia/config"
 )
 
 func HideItem(path string) error {
@@ -24,7 +24,7 @@ func HideItem(path string) error {
 }
 
 func GetMainFolder() string {
-	return filepath.Join(os.Getenv("USERPROFILE"), "Music", config.HypotermiaName+"-"+config.Identifier)
+	return filepath.Join(os.Getenv("USERPROFILE"), "Music", config.HypothermiaName+"-"+config.Identifier)
 }
 
 func OverwriteFile(path string) error {

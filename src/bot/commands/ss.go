@@ -5,7 +5,7 @@ import (
 	"image/jpeg"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/kbinani/screenshot"
+	"github.com/vova616/screenshot"
 )
 
 const (
@@ -16,8 +16,7 @@ const (
 type ScreenShotCommand struct{}
 
 func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
-	bounds := screenshot.GetDisplayBounds(0)
-	img, err := screenshot.Capture(bounds.Min.X, bounds.Min.Y, bounds.Dx(), bounds.Dy())
+	img, err := screenshot.CaptureScreen()
 	if err != nil {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, ssCaptureError, m.Reference())
 		return err

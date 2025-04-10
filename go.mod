@@ -1,4 +1,4 @@
-module Hypotermia
+module Hypothermia
 
 go 1.23.4
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"Hypotermia/src/utils"
+	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -12,7 +12,7 @@ const (
 	treeUsage string = "[path] [depth?]"
 
 	treeArgsError string = "🟥 Expected 1 or more arguments."
-	treeGenError  string = "🟥 Failed to generate tree: "
+	treeGenError  string = "🟥 Error in generating tree: "
 	runError      string = "🟥 Error in running command: "
 )
 

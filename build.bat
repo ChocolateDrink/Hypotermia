@@ -1,7 +1,7 @@
 @echo off
 
-set SRC_DIR=%USERPROFILE%\Desktop\projects\Hypotermia\src
-set BUILD_DIR=%USERPROFILE%\Desktop\projects\Hypotermia\build
+set SRC_DIR=%USERPROFILE%\Desktop\projects\Hypothermia\src
+set BUILD_DIR=%USERPROFILE%\Desktop\projects\Hypothermia\build
 
 cd /d "%SRC_DIR%" 2>nul
 if %errorlevel% neq 0 (
@@ -13,24 +13,24 @@ if not exist "%BUILD_DIR%" (
 )
 
 cd /d "%SRC_DIR%"
-go build -ldflags -H=windowsgui -o ../build/Hypotermia.exe main.go
+go build -ldflags -H=windowsgui -o ../build/Hypothermia.exe main.go
 if %errorlevel% neq 0 (
     color 0C
-    echo Hypotermia build failed
+    echo Hypothermia build failed
 
     exit /b %errorlevel%
 )
 
-go build -o ../build/HypotermiaDebug.exe main.go
+go build -o ../build/HypothermiaDebug.exe main.go
 if %errorlevel% neq 0 (
     color 0C
-    echo Hypotermia debug build failed
+    echo Hypothermia debug build failed
 
     exit /b %errorlevel%
 )
 
 color 0A
-echo Hypotermia built successfully
+echo Hypothermia built successfully
 cls
 
 color 07

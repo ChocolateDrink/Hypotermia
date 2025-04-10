@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"Hypotermia/src/utils/crypto/crypt"
+	"Hypothermia/src/utils/crypto/crypt"
 )
 
 func main() {

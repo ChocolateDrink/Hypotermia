@@ -2,9 +2,9 @@ package config
 
 const (
 	// build stuff
-	HypotermiaName string = "Hypo"
-	Identifier     string = "ERFJK"
-	Verifier       string = "FGUJ2"
+	HypothermiaName string = "Hypo"
+	Identifier      string = "N95FJM7VB8J0"
+	Verifier        string = "G40FG"
 
 	// debug
 	Debugging    bool = false

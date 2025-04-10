@@ -1,7 +1,7 @@
 package commands
 
 import (
-	"Hypotermia/src/utils"
+	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 

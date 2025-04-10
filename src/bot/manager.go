@@ -8,9 +8,9 @@ import (
 	"strings"
 	"syscall"
 
-	"Hypotermia/config"
-	"Hypotermia/src/bot/commands"
-	"Hypotermia/src/utils/crypto/crypt"
+	"Hypothermia/config"
+	"Hypothermia/src/bot/commands"
+	"Hypothermia/src/utils/crypto/crypt"
 
 	"github.com/bwmarrin/discordgo"
 )
