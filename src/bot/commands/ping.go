@@ -9,7 +9,13 @@ import (
 type PingCommand struct{}
 
 func (*PingCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
-	_, err := s.ChannelMessageSend(m.ChannelID, "pong, args: "+strings.TrimSpace(strings.Join(args, " ")))
+	msg := "pong"
+
+	if len(args) > 0 {
+		msg = "pong, args: " + strings.TrimSpace(strings.Join(args, " "))
+	}
+
+	_, err := s.ChannelMessageSend(m.ChannelID, msg)
 	return err
 }
 
