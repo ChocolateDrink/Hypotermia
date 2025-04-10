@@ -17,8 +17,10 @@ const (
 	notifConvertError string = "🟥 Failed to convert argument."
 )
 
-var user32 = syscall.NewLazyDLL("user32.dll")
-var msgBox = user32.NewProc("MessageBoxW")
+var (
+	user32 *syscall.LazyDLL  = syscall.NewLazyDLL("user32.dll")
+	msgBox *syscall.LazyProc = user32.NewProc("MessageBoxW")
+)
 
 type NotifCommand struct{}
 
