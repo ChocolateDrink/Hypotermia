@@ -13,18 +13,11 @@ if not exist "%BUILD_DIR%" (
 )
 
 cd /d "%SRC_DIR%"
-go build -ldflags -H=windowsgui -o ../build/Hypothermia.exe main.go
+
+go build -trimpath -ldflags="-w -s -H=windowsgui" -o "%BUILD_DIR%\Hypothermia.exe" main.go
 if %errorlevel% neq 0 (
     color 0C
     echo Hypothermia build failed
-
-    exit /b %errorlevel%
-)
-
-go build -o ../build/HypothermiaDebug.exe main.go
-if %errorlevel% neq 0 (
-    color 0C
-    echo Hypothermia debug build failed
 
     exit /b %errorlevel%
 )
