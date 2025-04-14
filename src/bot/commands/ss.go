@@ -30,6 +30,7 @@ func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, 
 	}
 
 	_, err = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+		Reference: m.Reference(),
 		Files: []*discordgo.File{{
 			Name:   "ss.jpg",
 			Reader: &buf,
