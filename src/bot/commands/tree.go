@@ -13,7 +13,6 @@ const (
 
 	treeArgsError string = "🟥 Expected 1 or more arguments."
 	treeGenError  string = "🟥 Error in generating tree: "
-	runError      string = "🟥 Error in running command: "
 )
 
 type TreeCommand struct{}
@@ -38,7 +37,7 @@ func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err := utils.GenerateTree(args[0], depth, 0, "", &treeStr)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(treeGenError+"%v", err), m.Reference())
+		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(treeGenError+"%s", err), m.Reference())
 		return err
 	}
 
