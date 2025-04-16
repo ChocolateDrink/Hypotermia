@@ -13,13 +13,13 @@ const (
 var (
 	advapi32 *syscall.LazyDLL = syscall.NewLazyDLL("advapi32.dll")
 
-	initSid         *syscall.LazyProc = advapi32.NewProc("AllocateAndInitializeSid")
-	freeSid         *syscall.LazyProc = advapi32.NewProc("FreeSid")
-	tokenMembership *syscall.LazyProc = advapi32.NewProc("CheckTokenMembership")
-
-	identAuth [6]byte   = [6]byte{0, 0, 0, 0, 0, 5}
-	subAuth   [2]uint32 = [2]uint32{SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS}
+	initSid    *syscall.LazyProc = advapi32.NewProc("AllocateAndInitializeSid")
+	freeSid    *syscall.LazyProc = advapi32.NewProc("FreeSid")
+	checkToken *syscall.LazyProc = advapi32.NewProc("CheckTokenMembership")
 )
+
+var identAuth [6]byte = [6]byte{0, 0, 0, 0, 0, 5}
+var subAuth [2]uint32 = [2]uint32{SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS}
 
 func IsAdmin() (bool, error) {
 	var sid uintptr
@@ -40,12 +40,13 @@ func IsAdmin() (bool, error) {
 
 	defer freeSid.Call(sid)
 
-	_, _, err = tokenMembership.Call(
-		0, sid,
+	ret, _, err = checkToken.Call(
+		0,
+		sid,
 		uintptr(unsafe.Pointer(&mem)),
 	)
 
-	if err != nil {
+	if ret == 0 {
 		return false, err
 	}
 
