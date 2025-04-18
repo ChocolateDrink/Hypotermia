@@ -15,8 +15,6 @@ const (
 	treeGenError  string = "🟥 Error in generating tree: "
 )
 
-type TreeCommand struct{}
-
 func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if len(args) == 0 {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, treeArgsError+"\nUsage: "+treeUsage, m.Reference())
@@ -52,3 +50,5 @@ func (*TreeCommand) Name() string {
 func (*TreeCommand) Info() string {
 	return "shows a tree of files in a directory"
 }
+
+type TreeCommand struct{}

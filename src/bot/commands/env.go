@@ -9,8 +9,6 @@ const (
 	envGetError string = "🟥 Failed to get the user profile."
 )
 
-type EnvCommand struct{}
-
 func (*EnvCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	info, err := utils.GetUserProfile()
 	if err != nil {
@@ -36,3 +34,5 @@ func (*EnvCommand) Name() string {
 func (*EnvCommand) Info() string {
 	return "returns info about the users environment"
 }
+
+type EnvCommand struct{}

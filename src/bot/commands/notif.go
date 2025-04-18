@@ -17,15 +17,10 @@ const (
 	notifConvertError string = "🟥 Failed to convert argument."
 )
 
-var (
-	user32 *syscall.LazyDLL  = syscall.NewLazyDLL("user32.dll")
-	msgBox *syscall.LazyProc = user32.NewProc("MessageBoxW")
-)
-
-type NotifCommand struct{}
+var msgBox *syscall.LazyProc = utils.User32.NewProc("MessageBoxW")
 
 func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
-	if len(args) < 2 {
+	if len(args) == 0 {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, notifArgsError+"\nUsage: "+notifUsage, m.Reference())
 		return err
 	}
@@ -67,3 +62,5 @@ func (*NotifCommand) Name() string {
 func (*NotifCommand) Info() string {
 	return "displays a messagebox"
 }
+
+type NotifCommand struct{}

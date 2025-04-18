@@ -6,8 +6,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-type PingCommand struct{}
-
 func (*PingCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	msg := "pong"
 
@@ -26,3 +24,5 @@ func (*PingCommand) Name() string {
 func (*PingCommand) Info() string {
 	return "test command"
 }
+
+type PingCommand struct{}

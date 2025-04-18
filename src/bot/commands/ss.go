@@ -13,8 +13,6 @@ const (
 	ssEncodingError string = "🟥 Failed to encode screenshot."
 )
 
-type ScreenShotCommand struct{}
-
 func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	img, err := screenshot.CaptureScreen()
 	if err != nil {
@@ -47,3 +45,5 @@ func (*ScreenShotCommand) Name() string {
 func (*ScreenShotCommand) Info() string {
 	return "takes a screenshot"
 }
+
+type ScreenShotCommand struct{}

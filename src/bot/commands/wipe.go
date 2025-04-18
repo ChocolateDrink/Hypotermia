@@ -25,8 +25,6 @@ const (
 	wipeSoftKill string = "🟩 Hypothermia soft killed, will startup on device reset."
 )
 
-type WipeCommand struct{}
-
 func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	var kill bool = false
 	if len(args) == 1 {
@@ -117,3 +115,5 @@ func (*WipeCommand) Name() string {
 func (*WipeCommand) Info() string {
 	return "removes hypothermia and all its traces"
 }
+
+type WipeCommand struct{}

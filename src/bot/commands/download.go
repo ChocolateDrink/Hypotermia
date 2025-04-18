@@ -13,8 +13,6 @@ const (
 	dwSuccess     string = "🟩 Successfully downloaded file to: "
 )
 
-type DownloadCommand struct{}
-
 func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if m.MessageReference == nil {
 		_, err := s.ChannelMessageSendReply(m.ChannelID, dwNoFileError, m.Reference())
@@ -60,3 +58,5 @@ func (*DownloadCommand) Name() string {
 func (*DownloadCommand) Info() string {
 	return "downloads a file to the users device"
 }
+
+type DownloadCommand struct{}

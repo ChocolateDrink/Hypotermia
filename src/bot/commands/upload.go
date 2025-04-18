@@ -13,14 +13,12 @@ const (
 	uploadUsage string = "[path]"
 
 	uploadArgsError     string = "🟥 Expected 1 argument."
-	uploadFileInfoError string = "🟥 Failed to info about the path."
+	uploadFileInfoError string = "🟥 Failed to get info about the path."
 	uploadZipError      string = "🟥 Failed to zip folder."
 	uploadOpenFileError string = "🟥 Failed to open file."
 
 	uploadSuccess string = "🟩 Uploaded at: "
 )
-
-type UploadCommand struct{}
 
 func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
 	if len(args) == 0 {
@@ -71,3 +69,5 @@ func (*UploadCommand) Name() string {
 func (*UploadCommand) Info() string {
 	return "uploads a chosen file or folder to 0x0.st"
 }
+
+type UploadCommand struct{}
