@@ -6,7 +6,43 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
-func SetRegistry(path string, key string, value string) error {
+func MakeRegistryKey(path string) error {
+	if len(path) == 0 {
+		return fmt.Errorf("path is empty")
+	}
+
+	key, _, err := registry.CreateKey(
+		registry.CURRENT_USER,
+		path, registry.ALL_ACCESS,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	defer key.Close()
+
+	return nil
+}
+
+func DelRegistryKey(path string) error {
+	if len(path) == 0 {
+		return fmt.Errorf("path is empty")
+	}
+
+	err := registry.DeleteKey(registry.CURRENT_USER, path)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func SetRegistryVal(path string, key string, value string) error {
+	if len(path) == 0 {
+		return fmt.Errorf("path is empty")
+	}
+
 	if len(key) == 0 {
 		return fmt.Errorf("key is empty")
 	}
@@ -34,7 +70,11 @@ func SetRegistry(path string, key string, value string) error {
 	return nil
 }
 
-func GetRegistry(path string, key string) (string, error) {
+func GetRegistryVal(path string, key string) (string, error) {
+	if len(path) == 0 {
+		return "", fmt.Errorf("path is empty")
+	}
+
 	if len(key) == 0 {
 		return "", fmt.Errorf("key is empty")
 	}
@@ -58,7 +98,11 @@ func GetRegistry(path string, key string) (string, error) {
 	return val, nil
 }
 
-func DelRegistry(path string, key string) error {
+func DelRegistryVal(path string, key string) error {
+	if len(path) == 0 {
+		return fmt.Errorf("path is empty")
+	}
+
 	if len(key) == 0 {
 		return fmt.Errorf("key is empty")
 	}
