@@ -19,7 +19,7 @@ import (
 )
 
 type Command interface {
-	Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error
+	Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string)
 	Name() string
 	Info() string
 }
@@ -167,6 +167,7 @@ func register() {
 	commandsList["eval"] = &commands.EvalCommand{}
 	commandsList["grab"] = &commands.GrabCommand{}
 	commandsList["input"] = &commands.InputCommand{}
+	commandsList["locate"] = &commands.LocateCommand{}
 	commandsList["notif"] = &commands.NotifCommand{}
 	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["record"] = &commands.RecordCommand{}
