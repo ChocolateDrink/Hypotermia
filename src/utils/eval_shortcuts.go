@@ -7,6 +7,7 @@ var CmdShortcuts = map[string]string{
 	"kill_all":      "for /f \"skip=3 tokens=1\" %i in ('tasklist /FI \"STATUS eq running\"') do taskkill /IM \"%i\" /F /T",
 	"shutdown":      "shutdown /s /f /t 0",
 	"restart":       "shutdown /r /f /t 0",
+	"sleep":         "rundll32.exe powrprof.dll,SetSuspendState 0,1,0",
 	"ip":            "curl https://ipinfo.io/ip -s",
 }
 
