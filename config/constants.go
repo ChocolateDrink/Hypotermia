@@ -5,6 +5,7 @@ const (
 	HypothermiaName string = "Hypo"
 	Identifier      string = "N95FJM7VB8J0"
 	Verifier        string = "G40FG"
+	SettingsName    string = "ms-player-hypo"
 
 	// debug
 	Debugging    bool = false
