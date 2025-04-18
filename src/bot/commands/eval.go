@@ -23,10 +23,10 @@ const (
 	evalBadOutput  string = "🟥 Failed to run command."
 )
 
-func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+		return
 	}
 
 	if args[0] == "?" {
@@ -40,8 +40,8 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 			shortcuts += name + "\n"
 		}
 
-		_, err := s.ChannelMessageSendReply(m.ChannelID, shortcuts, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, shortcuts, m.Reference())
+		return
 	}
 
 	cmdName := ""
@@ -55,21 +55,21 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		*cmdArgs = []string{"-Command", val}
 	} else if args[0] == "powershell" || args[0] == "ps" {
 		if len(args) < 2 {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+			return
 		}
 		cmdName = "powershell"
 		*cmdArgs = []string{"-Command", strings.Join(args[1:], " ")}
 	} else if args[0] == "cmd" {
 		if len(args) < 2 {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+			return
 		}
 		cmdName = "cmd"
 		*cmdArgs = []string{"/C", strings.Join(args[1:], " ")}
 	} else {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, evalUseError+"\nUsage: "+evalUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, evalUseError+"\nUsage: "+evalUsage, m.Reference())
+		return
 	}
 
 	cmd := exec.Command(cmdName, *cmdArgs...)
@@ -85,10 +85,8 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err := cmd.Run()
 	if err != nil {
-		_, sendErr := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(evalRunError+"%v", err), m.Reference())
-		if sendErr != nil {
-			return sendErr
-		}
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(evalRunError+"%v", err), m.Reference())
+		return
 	}
 
 	response := ""
@@ -107,8 +105,7 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		response = evalNoOutput
 	}
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
 }
 
 func (*EvalCommand) Name() string {

@@ -9,14 +9,14 @@ import (
 )
 
 const (
-	dwNoFileError string = "🟥 You need reply to a file."
+	dwNoFileError string = "🟥 You need reply to a file or a file url."
 	dwSuccess     string = "🟩 Successfully downloaded file to: "
 )
 
-func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if m.MessageReference == nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, dwNoFileError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, dwNoFileError, m.Reference())
+		return
 	}
 
 	var fileURL string
@@ -37,18 +37,17 @@ func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, ar
 	}
 
 	if fileURL == "" {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, dwNoFileError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, dwNoFileError, m.Reference())
+		return
 	}
 
 	path, err := utils.DonwloadFile(fileURL)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+		return
 	}
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(dwSuccess, path), m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(dwSuccess, path), m.Reference())
 }
 
 func (*DownloadCommand) Name() string {

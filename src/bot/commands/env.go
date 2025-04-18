@@ -5,15 +5,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-const (
-	envGetError string = "🟥 Failed to get the user profile."
-)
+const envGetError string = "🟥 Failed to get the user profile."
 
-func (*EnvCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*EnvCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	info, err := utils.GetUserProfile()
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, envGetError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, envGetError, m.Reference())
+		return
 	}
 
 	var infoStr string
@@ -23,8 +21,7 @@ func (*EnvCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []
 	infoStr += "Uid: " + info.Uid + "\n"
 	infoStr += "HomeDir: " + info.HomeDir + "\n"
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, infoStr, m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, infoStr, m.Reference())
 }
 
 func (*EnvCommand) Name() string {

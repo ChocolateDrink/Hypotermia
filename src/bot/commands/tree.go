@@ -15,10 +15,10 @@ const (
 	treeGenError  string = "🟥 Error in generating tree: "
 )
 
-func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, treeArgsError+"\nUsage: "+treeUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, treeArgsError+"\nUsage: "+treeUsage, m.Reference())
+		return
 	}
 
 	var depth int = 2
@@ -35,12 +35,11 @@ func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err := utils.GenerateTree(args[0], depth, 0, "", &treeStr)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(treeGenError+"%s", err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(treeGenError+"%s", err), m.Reference())
+		return
 	}
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, treeStr, m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, treeStr, m.Reference())
 }
 
 func (*TreeCommand) Name() string {

@@ -13,29 +13,27 @@ const (
 	ssEncodingError string = "🟥 Failed to encode screenshot."
 )
 
-func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	img, err := screenshot.CaptureScreen()
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, ssCaptureError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, ssCaptureError, m.Reference())
+		return
 	}
 
 	var buf bytes.Buffer
 	err = jpeg.Encode(&buf, img, nil)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, ssEncodingError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, ssEncodingError, m.Reference())
+		return
 	}
 
-	_, err = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+	s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
 		Reference: m.Reference(),
 		Files: []*discordgo.File{{
 			Name:   "ss.jpg",
 			Reader: &buf,
 		}},
 	})
-
-	return err
 }
 
 func (*ScreenShotCommand) Name() string {

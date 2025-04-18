@@ -19,22 +19,22 @@ const (
 
 var msgBox *syscall.LazyProc = utils.User32.NewProc("MessageBoxW")
 
-func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, notifArgsError+"\nUsage: "+notifUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, notifArgsError+"\nUsage: "+notifUsage, m.Reference())
+		return
 	}
 
 	text, err := syscall.UTF16FromString(strings.ReplaceAll(args[0], "_", " "))
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
+		return
 	}
 
 	title, err := syscall.UTF16FromString(strings.ReplaceAll(args[1], "_", " "))
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
+		return
 	}
 
 	var button uint
@@ -51,8 +51,7 @@ func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args 
 		uintptr(button),
 	)
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, utils.GetButtonClicked(ret), m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, utils.GetButtonClicked(ret), m.Reference())
 }
 
 func (*NotifCommand) Name() string {

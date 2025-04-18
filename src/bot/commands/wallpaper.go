@@ -15,10 +15,10 @@ const (
 	wpSuccess    string = "🟩 Successfully set wallpaper."
 )
 
-func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if m.MessageReference == nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wpNoPicError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, wpNoPicError, m.Reference())
+		return
 	}
 
 	var imgURL string
@@ -34,24 +34,23 @@ func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, a
 	}
 
 	if imgURL == "" {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wpNoPicError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, wpNoPicError, m.Reference())
+		return
 	}
 
 	path, err := utils.DonwloadFile(imgURL)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+		return
 	}
 
 	err = utils.SetWallpaper(path)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+		return
 	}
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, wpSuccess, m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, wpSuccess, m.Reference())
 }
 
 func (*WallpaperCommand) Name() string {

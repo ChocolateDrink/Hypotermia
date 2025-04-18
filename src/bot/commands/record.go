@@ -29,42 +29,36 @@ const (
 
 	recStart    string = "🟩 Recording for %d seconds."
 	recDone     string = "🟩 Recording completed, sending file..."
-	recTooLong  string = "🟨 Recording time is too long, setting to 30 seconds."
+	recTooLong  string = "🟨 Recording time is too long, recording for 30 seconds."
 	recTooLarge string = "🟨 Recording is over 8MB, uploading to 0x0.st..."
 
 	sizeLimit int64 = 8 * 1024 * 1024
 	fps       int   = 30
 )
 
-func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) error {
+func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, recArgsError+"\nUsage: "+recUsage, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recArgsError+"\nUsage: "+recUsage, m.Reference())
+		return
 	}
 
 	dur, err := strconv.Atoi(args[0])
 	if err != nil {
-		_, err := s.ChannelMessageSendReply(m.ChannelID, recConvError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recConvError, m.Reference())
+		return
 	}
 
 	if dur > 30 {
 		dur = 30
-		_, err := s.ChannelMessageSendReply(m.ChannelID, recTooLong, m.Reference())
-		if err != nil {
-			return err
-		}
+		s.ChannelMessageSendReply(m.ChannelID, recTooLong, m.Reference())
 	}
 
-	msg, err := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(recStart, dur), m.Reference())
-	if err != nil {
-		return err
-	}
+	msg, _ := s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(recStart, dur), m.Reference())
 
 	img, err := screenshot.CaptureScreen()
 	if err != nil {
-		_, err = s.ChannelMessageSendReply(m.ChannelID, recTestSSError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recTestSSError, m.Reference())
+		return
 	}
 
 	width := img.Bounds().Dx()
@@ -74,8 +68,8 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	writer, err := mjpeg.New(fileName, int32(width), int32(height), int32(fps))
 	if err != nil {
-		_, err = s.ChannelMessageSendReply(m.ChannelID, recWriterError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recWriterError, m.Reference())
+		return
 	}
 
 	frames := dur * fps
@@ -116,23 +110,23 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	err = writer.Close()
 	if err != nil {
-		_, err = s.ChannelMessageSendReply(m.ChannelID, recCloseError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recCloseError, m.Reference())
+		return
 	}
 
 	s.ChannelMessageEdit(msg.ChannelID, msg.ID, recDone)
 
 	fileInfo, err := os.Stat(fileName)
 	if err != nil || fileInfo.Size() == 0 {
-		_, err = s.ChannelMessageSendReply(m.ChannelID, recSizeError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recSizeError, m.Reference())
+		return
 	}
 
 	file, err := os.Open(fileName)
 	if err != nil {
 		os.Remove(fileName)
-		_, err = s.ChannelMessageSendReply(m.ChannelID, recOpenError, m.Reference())
-		return err
+		s.ChannelMessageSendReply(m.ChannelID, recOpenError, m.Reference())
+		return
 	}
 
 	defer file.Close()
@@ -142,18 +136,18 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 		msg, err := s.ChannelMessageSendReply(m.ChannelID, recTooLarge, m.Reference())
 		if err != nil {
 			os.Remove(fileName)
-			return err
+			return
 		}
 
 		url, err := utils.UploadFile(fileName, file)
 		if err != nil {
 			os.Remove(fileName)
-			_, err = s.ChannelMessageSendReply(m.ChannelID, recUploadError, m.Reference())
-			return err
+			s.ChannelMessageSendReply(m.ChannelID, recUploadError, m.Reference())
+			return
 		}
 
 		s.ChannelMessageEdit(msg.ChannelID, msg.ID, uploadSuccess+url)
-		return err
+		return
 	} else {
 		_, err = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
 			Reference: m.Reference(),
@@ -165,13 +159,11 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 		if err != nil {
 			os.Remove(fileName)
-			return err
+			return
 		}
 	}
 
 	os.Remove(fileName)
-
-	return nil
 }
 
 func (*RecordCommand) Name() string {
