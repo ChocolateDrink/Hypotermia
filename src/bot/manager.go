@@ -166,6 +166,7 @@ func register() {
 	commandsList["env"] = &commands.EnvCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
 	commandsList["grab"] = &commands.GrabCommand{}
+	commandsList["input"] = &commands.InputCommand{}
 	commandsList["notif"] = &commands.NotifCommand{}
 	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["record"] = &commands.RecordCommand{}
