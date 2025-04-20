@@ -5,7 +5,6 @@ import (
 	"syscall"
 
 	"Hypothermia/src/utils"
-
 	"github.com/bwmarrin/discordgo"
 )
 

