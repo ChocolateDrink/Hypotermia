@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
@@ -11,8 +12,9 @@ import (
 const (
 	treeUsage string = "[path] [depth?]"
 
-	treeArgsError string = "🟥 Expected 1 or more arguments."
-	treeGenError  string = "🟥 Error in generating tree: "
+	treeFormatError string = "🟥 Expected a ending quote."
+	treeArgsError   string = "🟥 Expected 1 or more arguments."
+	treeGenError    string = "🟥 Error in generating tree: "
 )
 
 func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -21,11 +23,26 @@ func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		return
 	}
 
-	var depth int = 2
+	var path string
+	var depth int
 	var treeStr string
 
-	if len(args) > 1 {
-		num, err := strconv.Atoi(args[1])
+	if strings.HasPrefix(args[0], "\"") {
+		joined := strings.Join(args, " ")
+		start := strings.Index(joined, "\"") + 1
+		end := strings.Index(joined[start:], "\"") + start
+
+		if start == 0 || end == -1 {
+			s.ChannelMessageSendReply(m.ChannelID, treeFormatError, m.Reference())
+			return
+		}
+
+		path = joined[start:end]
+		args = args[len(strings.Split(path, " ")):]
+	}
+
+	if len(args) > 0 {
+		num, err := strconv.Atoi(args[len(args)-1])
 		if err != nil {
 			depth = 2
 		} else {
@@ -33,7 +50,7 @@ func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		}
 	}
 
-	err := utils.GenerateTree(args[0], depth, 0, "", &treeStr)
+	err := utils.GenerateTree(path, depth, 0, "", &treeStr)
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(treeGenError+"%s", err), m.Reference())
 		return

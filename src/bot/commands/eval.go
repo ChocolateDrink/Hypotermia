@@ -58,6 +58,7 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 			s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
 			return
 		}
+
 		cmdName = "powershell"
 		*cmdArgs = []string{"-Command", strings.Join(args[1:], " ")}
 	} else if args[0] == "cmd" {
@@ -65,6 +66,7 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 			s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
 			return
 		}
+
 		cmdName = "cmd"
 		*cmdArgs = []string{"/C", strings.Join(args[1:], " ")}
 	} else {
