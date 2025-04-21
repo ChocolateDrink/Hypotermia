@@ -25,6 +25,11 @@ const (
 	audioSuccess string = "🟩 Successfully played audio."
 )
 
+var (
+	context *oto.Context
+	inited  bool = false
+)
+
 func (*AudioCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if m.MessageReference == nil {
 		s.ChannelMessageSendReply(m.ChannelID, audioNoFileError, m.Reference())
@@ -68,10 +73,14 @@ func (*AudioCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args 
 		return
 	}
 
-	context, err := oto.NewContext(decoder.SampleRate(), 2, 2, 8192)
-	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, audioContextError, m.Reference())
-		return
+	if !inited {
+		context, err = oto.NewContext(decoder.SampleRate(), 2, 2, 8192)
+		if err != nil {
+			s.ChannelMessageSendReply(m.ChannelID, audioContextError, m.Reference())
+			return
+		}
+
+		inited = true
 	}
 
 	player := context.NewPlayer()
