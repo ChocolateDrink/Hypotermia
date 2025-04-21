@@ -123,6 +123,13 @@ func Init() {
 }
 
 func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
+	defer func() {
+		err := recover()
+		if err != nil {
+			s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf("⚠️ FATAL ERROR: %v", err), m.Reference())
+		}
+	}()
+
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
