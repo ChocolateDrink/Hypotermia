@@ -15,11 +15,21 @@ const (
 	dwCopyError       string = "🟥 Failed to copy response body."
 )
 
-func DonwloadFile(url string) (string, error) {
+func DonwloadFile(url string, dest string) (string, error) {
 	urlPath := strings.Split(url, "?")[0]
 	fileName := filepath.Base(urlPath)
 
-	filePath := filepath.Join(os.TempDir(), fileName)
+	var filePath string
+	if dest == "" {
+		filePath = filepath.Join(os.TempDir(), fileName)
+	} else {
+		info, err := os.Stat(dest)
+		if err == nil && info.IsDir() {
+			filePath = filepath.Join(dest, fileName)
+		} else {
+			filePath = dest
+		}
+	}
 
 	file, err := os.Create(filePath)
 	if err != nil {
