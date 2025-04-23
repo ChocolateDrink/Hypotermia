@@ -41,7 +41,12 @@ func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, ar
 		return
 	}
 
-	path, err := utils.DonwloadFile(fileURL)
+	var dest string
+	if len(args) != 0 {
+		dest = args[0]
+	}
+
+	path, err := utils.DonwloadFile(fileURL, dest)
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
 		return

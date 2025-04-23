@@ -53,7 +53,7 @@ func (*AudioCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args 
 		return
 	}
 
-	path, err := utils.DonwloadFile(fileURL)
+	path, err := utils.DonwloadFile(fileURL, "")
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
 		return

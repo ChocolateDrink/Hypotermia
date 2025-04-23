@@ -38,7 +38,7 @@ func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, a
 		return
 	}
 
-	path, err := utils.DonwloadFile(imgURL)
+	path, err := utils.DonwloadFile(imgURL, "")
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
 		return
