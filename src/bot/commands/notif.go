@@ -11,7 +11,7 @@ import (
 
 const (
 	notifButtons string = "abort-retry-ignore\ncancel-try_again-continue\nhelp\nok\nok-cancel\nretry-cancel\nyes-no\nyes-no-cancel"
-	notifUsage   string = "[text] [title] [button?]\n\nButtons:\n" + notifButtons + "\n\n*separate words with underscores"
+	notifUsage   string = "[text] [title] [button?]\n\nButtons:\n" + notifButtons + "\n\n*separate text and title with quotes"
 
 	notifArgsError    string = "🟥 Expected 2 or more arguments."
 	notifConvertError string = "🟥 Failed to convert argument."
@@ -20,18 +20,20 @@ const (
 var msgBox *syscall.LazyProc = utils.User32.NewProc("MessageBoxW")
 
 func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	if len(args) == 0 {
+	if len(args) < 2 {
 		s.ChannelMessageSendReply(m.ChannelID, notifArgsError+"\nUsage: "+notifUsage, m.Reference())
 		return
 	}
 
-	text, err := syscall.UTF16FromString(strings.ReplaceAll(args[0], "_", " "))
+	data := utils.GetText(strings.Join(args, " "))
+
+	text, err := syscall.UTF16FromString(data[0])
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
 		return
 	}
 
-	title, err := syscall.UTF16FromString(strings.ReplaceAll(args[1], "_", " "))
+	title, err := syscall.UTF16FromString(data[1])
 	if err != nil {
 		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
 		return
