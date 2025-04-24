@@ -155,7 +155,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	cmdName := args[0]
+	cmdName := strings.ToLower(args[0])
 	if cmdName == "help" {
 		var helpStr string = "commands:\n"
 
