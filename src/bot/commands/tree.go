@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"Hypothermia/src/utils"
-
 	"github.com/bwmarrin/discordgo"
 )
 
