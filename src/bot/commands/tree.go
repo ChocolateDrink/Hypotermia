@@ -1,11 +1,13 @@
 package commands
 
 import (
+	"bytes"
 	"fmt"
 	"strconv"
 	"strings"
 
 	"Hypothermia/src/utils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -56,7 +58,19 @@ func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		return
 	}
 
-	s.ChannelMessageSendReply(m.ChannelID, treeStr, m.Reference())
+	if len(treeStr)+10 > 1900 {
+		s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+			Reference: m.Reference(),
+			Files: []*discordgo.File{{
+				Name:        "output.txt",
+				ContentType: "text/plain",
+				Reader:      bytes.NewReader([]byte(treeStr)),
+			}},
+		})
+	} else {
+		treeStr = "```\n" + treeStr + "\n```"
+		s.ChannelMessageSendReply(m.ChannelID, treeStr, m.Reference())
+	}
 }
 
 func (*TreeCommand) Name() string {

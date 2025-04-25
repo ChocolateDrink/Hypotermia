@@ -13,9 +13,9 @@ const (
 
 	inputArgsError string = "🟥 Expected 1 argument."
 	inputUseError  string = "🟥 Invalid argument."
-	inputFuncError string = "🟥 Failed to call function: %s"
+	inputFuncError string = "🟥 Failed to block inputs: %s"
 
-	inputSuccess string = "🟩 Success in calling function."
+	inputSuccess string = "🟩 Successfully blocked inputs."
 )
 
 var blockInput *syscall.LazyProc = utils.User32.NewProc("BlockInput")
