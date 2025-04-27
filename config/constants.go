@@ -2,14 +2,14 @@ package config
 
 const (
 	// build stuff
-	HypothermiaName string = "Hypo"
-	Identifier      string = "GHY7G4534Y5RH4HG"
-	Verifier        string = "SZG5YH"
-	SettingsName    string = "ms-player-hypo"
+	HypothermiaName string = "GRHUG"
+	Identifier      string = "XLLEW"
+	Verifier        string = "KOIFE"
+	SettingsName    string = "FJUHI"
 
 	// version
 	Major int = 1
-	Minor int = 3
+	Minor int = 4
 	Patch int = 3
 
 	// debug
