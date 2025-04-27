@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -17,8 +16,6 @@ const (
 	uploadFileInfoError string = "🟥 Failed to get info about the path."
 	uploadZipError      string = "🟥 Failed to zip folder."
 	uploadOpenFileError string = "🟥 Failed to open file."
-
-	uploadSuccess string = "🟩 Uploaded at: "
 )
 
 func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -50,14 +47,19 @@ func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 	}
 
 	var filePath string
+	var fileName string
+
 	if info.IsDir() {
 		filePath, err = utils.ZipFolder(path)
 		if err != nil {
 			s.ChannelMessageSendReply(m.ChannelID, uploadZipError, m.Reference())
 			return
 		}
+
+		fileName = info.Name() + ".zip"
 	} else {
 		filePath = path
+		fileName = info.Name()
 	}
 
 	file, err := os.Open(filePath)
@@ -68,13 +70,14 @@ func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	defer file.Close()
 
-	url, err := utils.UploadFile(filePath, file)
-	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
-		return
-	}
-
-	s.ChannelMessageSendReply(m.ChannelID, uploadSuccess+url, m.Reference())
+	s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+		Reference: m.Reference(),
+		Files: []*discordgo.File{{
+			Name:        fileName,
+			ContentType: "application/octet-stream",
+			Reader:      file,
+		}},
+	})
 }
 
 func (*UploadCommand) Name() string {
@@ -82,7 +85,7 @@ func (*UploadCommand) Name() string {
 }
 
 func (*UploadCommand) Info() string {
-	return "uploads a chosen file or folder to 0x0.st"
+	return "uploads a chosen file or folder"
 }
 
 type UploadCommand struct{}

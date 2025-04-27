@@ -32,6 +32,8 @@ const (
 	recTooLong  string = "🟨 Recording time is too long, recording for 30 seconds."
 	recTooLarge string = "🟨 Recording is over 8MB, uploading to 0x0.st..."
 
+	recUploadSuccess string = "🟩 Uploaded at: %s"
+
 	sizeLimit int64 = 8 * 1024 * 1024
 	fps       int   = 30
 )
@@ -146,7 +148,7 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 			return
 		}
 
-		s.ChannelMessageEdit(msg.ChannelID, msg.ID, uploadSuccess+url)
+		s.ChannelMessageEdit(msg.ChannelID, msg.ID, fmt.Sprintf(recUploadSuccess, url))
 		return
 	} else {
 		_, err = s.ChannelMessageSendComplex(m.ChannelID, &discordgo.MessageSend{
