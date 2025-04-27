@@ -7,22 +7,22 @@ import (
 )
 
 func main() {
-	var token string
+	var data string
 
 	fmt.Print("Data: ")
-	_, err := fmt.Scanf("%s", &token)
+	_, err := fmt.Scanf("%s", &data)
 	if err != nil {
 		fmt.Println("Error reading:", err)
 		return
 	}
 
-	fmt.Printf("Encrypting data: \"%s\"\n", token)
+	fmt.Printf("Encrypting data: \"%s\"\n", data)
 
-	encrypted := utils_crypto.EncryptBasic(token)
+	encrypted := utils_crypto.EncryptBasic(data)
 	fmt.Println("Encrypted data:", encrypted)
 
 	decrypted := utils_crypto.DecryptBasic(encrypted)
 	fmt.Println("Decrypted data:", decrypted)
 
-	fmt.Printf("Does it match: %v\n", token == decrypted)
+	fmt.Printf("Does it match: %v\n", data == decrypted)
 }
