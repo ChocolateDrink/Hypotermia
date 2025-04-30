@@ -14,11 +14,11 @@ const (
 func (*ScreenShotCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	buf, err := funcs.Screenshot()
 	switch err {
-	case -2:
+	case -1:
 		s.ChannelMessageSendReply(m.ChannelID, ssCaptureError, m.Reference())
 		return
 
-	case -1:
+	case -2:
 		s.ChannelMessageSendReply(m.ChannelID, ssEncodingError, m.Reference())
 		return
 	}
