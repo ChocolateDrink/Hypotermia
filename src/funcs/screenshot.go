@@ -10,13 +10,13 @@ import (
 func Screenshot() (*bytes.Buffer, int) {
 	img, err := screenshot.CaptureScreen()
 	if err != nil {
-		return nil, -2
+		return nil, -1
 	}
 
 	var buf bytes.Buffer
 	err = jpeg.Encode(&buf, img, nil)
 	if err != nil {
-		return nil, -1
+		return nil, -2
 	}
 
 	return &buf, 0

@@ -21,7 +21,7 @@ func BlueScreen() (int, error) {
 	)
 
 	if ret != 0 {
-		return -2, err
+		return -1, err
 	}
 
 	ret, _, err = raiseHardError.Call(
@@ -34,7 +34,7 @@ func BlueScreen() (int, error) {
 	)
 
 	if ret != 0 {
-		return -1, err
+		return -2, err
 	}
 
 	return 0, nil
