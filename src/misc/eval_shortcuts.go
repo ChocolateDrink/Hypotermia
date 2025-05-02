@@ -16,4 +16,5 @@ var PsShortcuts = map[string]string{
 	"hwid":     "(Get-CimInstance Win32_ComputerSystemProduct).UUID",
 	"kill_fg":  "Get-Process | Where-Object { $_.MainWindowHandle -ne 0 } | ForEach-Object { Stop-Process -Id $_.Id -Force }",
 	"blackout": "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Form]::new() | ForEach-Object {$_.WindowState='Maximized'; $_.FormBorderStyle='None'; $_.BackColor=[System.Drawing.Color]::Black; $_.TopMost=$true; $_.KeyPreview=$true; $_.Add_KeyDown({if($_.KeyCode -eq 'Escape'){$_.Close()}}); $_.ShowDialog()}",
+	"clear_dt": "Get-ChildItem '$env:USERPROFILE\\Desktop' -Filter *.lnk | Remove-Item -Force",
 }
