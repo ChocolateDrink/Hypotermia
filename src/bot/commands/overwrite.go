@@ -1,11 +1,13 @@
 package commands
 
 import (
-	"Hypothermia/src/utils"
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"Hypothermia/src/misc"
+	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -24,7 +26,7 @@ const (
 
 func (*OverwriteCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, ovArgsError+"\nUsage: "+ovUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, ovArgsError, ovUsage), m.Reference())
 		return
 	}
 

@@ -6,6 +6,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
@@ -37,7 +38,7 @@ var (
 
 func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, volArgsError+"\nUsage: "+volUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, volArgsError, volUsage), m.Reference())
 		return
 	}
 
@@ -109,10 +110,11 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	defer endpoint.Release()
 
+	volume := float32(vol)
 	res, _, _ = syscall.SyscallN(
 		endpoint.Vtbl.SetMasterVolumeLevelScalar,
 		uintptr(unsafe.Pointer(endpoint)),
-		uintptr(*(*uint32)(unsafe.Pointer(&vol))),
+		*(*uintptr)(unsafe.Pointer(&volume)),
 		0,
 	)
 

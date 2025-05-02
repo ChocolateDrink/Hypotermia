@@ -1,10 +1,13 @@
 package commands
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -20,7 +23,7 @@ const (
 
 func (*UploadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, uploadArgsError+"\nUsage: "+uploadUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, uploadArgsError, uploadUsage), m.Reference())
 		return
 	}
 

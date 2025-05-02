@@ -1,7 +1,10 @@
 package commands
 
 import (
+	"fmt"
+
 	"Hypothermia/config"
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
@@ -22,7 +25,7 @@ var settings = map[string]string{
 
 func (*SettingCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) < 2 {
-		s.ChannelMessageSendReply(m.ChannelID, setArgsError+"\nUsage: "+setUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, setArgsError, setUsage), m.Reference())
 		return
 	}
 

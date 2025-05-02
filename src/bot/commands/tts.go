@@ -6,6 +6,7 @@ import (
 	"strings"
 	"syscall"
 
+	"Hypothermia/src/misc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -25,7 +26,7 @@ const (
 
 func (*TTSCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, ttsArgsError+"\nUsage: "+ttsUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, ttsArgsError, ttsUsage), m.Reference())
 		return
 	}
 

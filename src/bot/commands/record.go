@@ -1,13 +1,15 @@
 package commands
 
 import (
-	"Hypothermia/src/utils"
 	"fmt"
 	"image/jpeg"
 	"os"
 	"path/filepath"
 	"strconv"
 	"time"
+
+	"Hypothermia/src/misc"
+	"Hypothermia/src/utils"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/icza/mjpeg"
@@ -40,7 +42,7 @@ const (
 
 func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, recArgsError+"\nUsage: "+recUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, recArgsError, recUsage), m.Reference())
 		return
 	}
 

@@ -1,11 +1,11 @@
 package commands
 
 import (
-	"Hypothermia/src/utils"
 	"encoding/base64"
 	"os"
 	"path/filepath"
 
+	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 

@@ -22,7 +22,7 @@ var blockInput *syscall.LazyProc = misc.User32.NewProc("BlockInput")
 
 func (*InputCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, inputArgsError+"\nUsage: "+inputUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, inputArgsError, inputUsage), m.Reference())
 		return
 	}
 

@@ -6,7 +6,9 @@ import (
 	"strconv"
 	"strings"
 
+	"Hypothermia/src/misc"
 	"Hypothermia/src/utils"
+
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -20,7 +22,7 @@ const (
 
 func (*TreeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, treeArgsError+"\nUsage: "+treeUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, treeArgsError, treeUsage), m.Reference())
 		return
 	}
 

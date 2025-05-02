@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"syscall"
 
+	"Hypothermia/src/misc"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -22,7 +23,7 @@ const (
 
 func (*LightCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) == 0 {
-		s.ChannelMessageSendReply(m.ChannelID, lightArgsError+"\nUsage: "+lightUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, lightArgsError, lightUsage), m.Reference())
 		return
 	}
 

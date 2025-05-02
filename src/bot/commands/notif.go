@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -23,7 +24,7 @@ var msgBox *syscall.LazyProc = misc.User32.NewProc("MessageBoxW")
 
 func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args []string) {
 	if len(args) < 2 {
-		s.ChannelMessageSendReply(m.ChannelID, notifArgsError+"\nUsage: "+notifUsage, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, notifArgsError, notifUsage), m.Reference())
 		return
 	}
 
