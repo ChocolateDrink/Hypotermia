@@ -53,6 +53,7 @@ func main() {
 			}
 		}
 
+		bot.OnStartup()
 		bot.Init()
 		return
 	}
