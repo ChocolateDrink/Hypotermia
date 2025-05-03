@@ -9,7 +9,7 @@ const (
 
 	// version
 	Major int = 1
-	Minor int = 6
+	Minor int = 7
 	Patch int = 5
 
 	// debug
