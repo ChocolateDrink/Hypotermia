@@ -203,6 +203,7 @@ func register() {
 	commandsList["ping"] = &commands.PingCommand{}
 	commandsList["record"] = &commands.RecordCommand{}
 	commandsList["setting"] = &commands.SettingCommand{}
+	commandsList["simulate"] = &commands.SimulateCommand{}
 	commandsList["ss"] = &commands.ScreenShotCommand{}
 	commandsList["tree"] = &commands.TreeCommand{}
 	commandsList["tts"] = &commands.TTSCommand{}
