@@ -43,62 +43,62 @@ func DecryptBasic(text string) string {
 	return decryptedStr
 }
 
-func permute(text string) string {
-	runes := []rune(text)
-	shift := getShift(5, 0, 2, 1)
+func permute(Η string) string {
+	Ꮋ := []rune(Η)
+	Ⲏ := getShift(5, 0, 2, 1)
 
-	for i := 0; i < len(runes); i += shift {
-		end := min(i+shift, len(runes))
+	for Ｈ := 0; Ｈ < len(Ꮋ); Ｈ += Ⲏ {
+		𝑯 := min(Ｈ+Ⲏ, len(Ꮋ))
 
-		for j, k := i, end-1; j < k; j, k = j+1, k-1 {
-			runes[j], runes[k] = runes[k], runes[j]
+		for Н, ℍ := Ｈ, 𝑯-1; Н < ℍ; Н, ℍ = Н+1, ℍ-1 {
+			Ꮋ[Н], Ꮋ[ℍ] = Ꮋ[ℍ], Ꮋ[Н]
 		}
 	}
 
-	return string(runes)
+	return string(Ꮋ)
 }
 
-func rotate(char int, back bool) int32 {
-	var c int
+func rotate(Ⳑ int, Ｌ bool) int32 {
+	var Ꮮ int
 
-	if back {
-		a := char & 0x00FF
-		b := (char >> 8) & 0x00FF
-		c = (a << 8) | b
-		c = (c - 328 + 0x10FFFF) % 0x10FFFF
-		c ^= 0x5A5A
+	if Ｌ {
+		𝖫 := Ⳑ & 0x00FF
+		𝗟 := (Ⳑ >> 8) & 0x00FF
+		Ꮮ = (𝖫 << 8) | 𝗟
+		Ꮮ = (Ꮮ - 328 + 0x10FFFF) % 0x10FFFF
+		Ꮮ ^= 0x5A5A
 	} else {
-		c = char ^ 0x5A5A
-		c = (c + 328) % 0x10FFFF
-		a := c & 0x00FF
-		b := (c >> 8) & 0x00FF
-		c = (a << 8) | b
+		Ꮮ = Ⳑ ^ 0x5A5A
+		Ꮮ = (Ꮮ + 328) % 0x10FFFF
+		𝖫 := Ꮮ & 0x00FF
+		𝗟 := (Ꮮ >> 8) & 0x00FF
+		Ꮮ = (𝖫 << 8) | 𝗟
 	}
 
-	return int32(c)
+	return int32(Ꮮ)
 }
 
-func getShift(n1 int, n2 int, n3 int, n4 int) int {
-	a := (n1) + (n3+n3)*getCom(n3+n4, n1)
-	b := n3 * n4 * n2 * int(math.Cos(float64(n3+n4))) * 92
-	c := getFac(n2) + getFac(n3) + getFac(n1) + 3
-	d := (n4 * n4) + int(math.Log2(float64(b))*10)
-	e := int(math.Sin(float64(n2+n1)))*n1 - b
-	f := n1*getCom(n1+n2, n3) + getFac(n4) + a
-	g := int(math.Erfcinv(float64(a-n3))) - 9
-	h := (n1*4 + int(math.Asin(float64(e))) + int(e))
+func getShift(Ρ int, Р int, Ⲣ int, Ｐ int) int {
+	𝐏 := (Ρ) + (Ⲣ+Ⲣ)*getCom(Ⲣ+Ｐ, Ρ)
+	𝑷 := Ⲣ * Ｐ * Р * int(math.Cos(float64(Ⲣ+Ｐ))) * 92
+	𝖯 := getFac(Р) + getFac(Ⲣ) + getFac(Ρ) + 3
+	𝗣 := (Ｐ * Ｐ) + int(math.Log2(float64(𝑷))*10)
+	𝘗 := int(math.Sin(float64(Р+Ρ)))*Ρ - 𝑷
+	𝙋 := Ρ*getCom(Ρ+Р, Ⲣ) + getFac(Ｐ) + 𝐏
+	𝙿 := int(math.Erfcinv(float64(𝐏-Ⲣ))) - 9
+	𝚙 := (Ρ*4 + int(math.Asin(float64(𝘗))) + int(𝘗))
 
-	return (d * 2) + int((float32(f)/10)+(float32(c)))/int(math.Trunc(4)) - d + (g - h) + n2
+	return (𝗣 * 2) + int((float32(𝙋)/10)+(float32(𝖯)))/int(math.Trunc(4)) - 𝗣 + (𝙿 - 𝚙) + Р
 }
 
-func getFac(n int) int {
-	if n <= 1 {
+func getFac(Ꮐ int) int {
+	if Ꮐ <= 1 {
 		return 1
 	}
 
-	return n * getFac(n-1)
+	return Ꮐ * getFac(Ꮐ-1)
 }
 
-func getCom(n1 int, n2 int) int {
-	return getFac(n1) / (getFac(n2) * getFac(n1-n2))
+func getCom(ᖴ int, Ｆ int) int {
+	return getFac(ᖴ) / (getFac(Ｆ) * getFac(ᖴ-Ｆ))
 }
