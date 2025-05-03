@@ -15,7 +15,7 @@ const (
 	dwCopyError       string = "🟥 Failed to copy response body."
 )
 
-func DonwloadFile(url string, dest string) (string, error) {
+func DonwloadFile(url string, dest string) (string, string) {
 	urlPath := strings.Split(url, "?")[0]
 	fileName := filepath.Base(urlPath)
 
@@ -33,26 +33,26 @@ func DonwloadFile(url string, dest string) (string, error) {
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return "", fmt.Errorf(dwCreateFileError)
+		return "", dwCreateFileError
 	}
 
 	defer file.Close()
 
 	res, err := http.Get(url)
 	if err != nil {
-		return "", fmt.Errorf(dwHttpError)
+		return "", dwHttpError
 	}
 
 	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf(dwHttpError)
+		return "", dwHttpError
 	}
 
 	_, err = io.Copy(file, res.Body)
 	if err != nil {
-		return "", err
+		return "", fmt.Sprint(err)
 	}
 
-	return filePath, nil
+	return filePath, ""
 }

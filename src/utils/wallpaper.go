@@ -1,15 +1,15 @@
 package utils
 
 import (
-	"fmt"
 	"path/filepath"
 	"syscall"
 	"unsafe"
+
+	"Hypothermia/src/misc"
 )
 
 const (
 	wpGetPathError string = "🟥 Failed to get path."
-	wpConvertError string = "🟥 Failed to convert argument."
 	wpCantSetError string = "🟥 Failed to wallpaper."
 )
 
@@ -19,20 +19,17 @@ const (
 	SPIF_SENDCHANGE      int = 0x02
 )
 
-var (
-	user32       *syscall.LazyDLL  = syscall.NewLazyDLL("user32.dll")
-	sysParamInfo *syscall.LazyProc = user32.NewProc("SystemParametersInfoW")
-)
+var sysParamInfo *syscall.LazyProc = misc.User32.NewProc("SystemParametersInfoW")
 
-func SetWallpaper(file string) error {
+func SetWallpaper(file string) string {
 	path, err := filepath.Abs(file)
 	if err != nil {
-		return fmt.Errorf(wpGetPathError)
+		return wpGetPathError
 	}
 
 	pathPtr, err := syscall.UTF16PtrFromString(path)
 	if err != nil {
-		return fmt.Errorf(wpConvertError)
+		return misc.ERROR_CONVERT
 	}
 
 	ret, _, _ := sysParamInfo.Call(
@@ -43,8 +40,8 @@ func SetWallpaper(file string) error {
 	)
 
 	if ret == 0 {
-		return fmt.Errorf(wpCantSetError)
+		return wpCantSetError
 	}
 
-	return nil
+	return ""
 }
