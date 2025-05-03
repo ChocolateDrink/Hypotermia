@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"path/filepath"
 	"strings"
 
@@ -38,15 +37,15 @@ func (*WallpaperCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, a
 		return
 	}
 
-	path, err := utils.DonwloadFile(imgURL, "")
-	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+	path, ret := utils.DonwloadFile(imgURL, "")
+	if ret != "" {
+		s.ChannelMessageSendReply(m.ChannelID, ret, m.Reference())
 		return
 	}
 
-	err = utils.SetWallpaper(path)
-	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+	ret = utils.SetWallpaper(path)
+	if ret != "" {
+		s.ChannelMessageSendReply(m.ChannelID, ret, m.Reference())
 		return
 	}
 

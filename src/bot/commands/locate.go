@@ -17,8 +17,8 @@ const (
 )
 
 const (
-	url  string = "ƒƟƠƝơũşŠƙƘƣơƥƚƙƭƣƪƪƙųŴŵƧƨƪƪƬƬƭƮƭƬƧƲƴƴƶƶƷƇƈƉƊƋƺǇǆƉǅǏǌǌƎ"   // https://geolocation-db.com/json/
-	maps string = "ƒƟƠƝơũşŠƩƪƫƑƜƞƞƠƠơűŲųŴŵƨƱƲƫƱƫƣƮưưƲƲƳƃƄƅƆƇƶǃǂƅǄƹǉǍƊǌǉƿǂǅƐ" // https://www.google.com/maps/place/
+	url  string = "噿啿呿孿长鑿쉿䩿䩿䡿嵿剿虿剿卿乿剿荿荿䡿䱿빿륿롿腿荿荿䵿虿蝿虿腿祿筿䱿腿籿罿罿祿捿承굿걿潿汿獿恿ↀ⒀湿承板ↀ"   // https://geolocation-db.com/json/
+	maps string = "噿啿呿孿长鑿쉿䩿婿聿荿艿啿坿坿兿뭿멿䩿啿䵿빿륿롿穿聿筿穿蕿蝿䡿聿硿筿筿蕿꽿깿꥿꡿歿桿罿걿⊀牿楿깿⊀ↀ捿⚀敿湿歿瑿" // https://www.google.com/maps/place/
 )
 
 type LocationData struct {

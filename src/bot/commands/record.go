@@ -20,7 +20,6 @@ const (
 	recUsage string = "[seconds]"
 
 	recArgsError   string = "🟥 Expected 1 argument."
-	recConvError   string = "🟥 Failed to convert argument."
 	recFileError   string = "🟥 Failed to create file."
 	recTestSSError string = "🟥 Failed to take test screenshot."
 	recWriterError string = "🟥 Failed to create video writer."
@@ -48,7 +47,7 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 
 	dur, err := strconv.Atoi(args[0])
 	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, recConvError, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, misc.ERROR_CONVERT, m.Reference())
 		return
 	}
 
@@ -143,8 +142,8 @@ func (*RecordCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 			return
 		}
 
-		url, err := utils.UploadFile(fileName, file)
-		if err != nil {
+		url, ret := utils.UploadFile(fileName, file)
+		if ret != "" {
 			os.Remove(fileName)
 			s.ChannelMessageSendReply(m.ChannelID, recUploadError, m.Reference())
 			return

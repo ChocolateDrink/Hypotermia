@@ -15,7 +15,6 @@ const (
 
 	lightArgsError  string = "🟥 Expected 1 argument."
 	lightRunError   string = "🟥 Failed to change brightness."
-	lightConvError  string = "🟥 Failed to convert argument."
 	lightLevelError string = "🟥 Number needs to be between 0 and 100."
 
 	lightSuccess string = "🟩 Set brightness to %d%%."
@@ -29,7 +28,7 @@ func (*LightCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args 
 
 	level, err := strconv.Atoi(args[0])
 	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, lightConvError, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, misc.ERROR_CONVERT, m.Reference())
 		return
 	}
 

@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"Hypothermia/src/utils"
 	"fmt"
 	"strings"
 
+	"Hypothermia/src/utils"
 	"github.com/bwmarrin/discordgo"
 )
 
@@ -47,8 +47,8 @@ func (*DownloadCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, ar
 	}
 
 	path, err := utils.DonwloadFile(fileURL, dest)
-	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprint(err), m.Reference())
+	if err != "" {
+		s.ChannelMessageSendReply(m.ChannelID, err, m.Reference())
 		return
 	}
 

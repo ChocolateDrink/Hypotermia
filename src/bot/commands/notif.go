@@ -16,8 +16,7 @@ const (
 	notifButtons string = "abort-retry-ignore\ncancel-try_again-continue\nhelp\nok\nok-cancel\nretry-cancel\nyes-no\nyes-no-cancel"
 	notifUsage   string = "[text] [title] [button?]\n\nButtons:\n" + notifButtons + "\n\n*separate text and title with quotes"
 
-	notifArgsError    string = "🟥 Expected 2 or more arguments."
-	notifConvertError string = "🟥 Failed to convert argument."
+	notifArgsError string = "🟥 Expected 2 or more arguments."
 )
 
 var msgBox *syscall.LazyProc = misc.User32.NewProc("MessageBoxW")
@@ -32,13 +31,13 @@ func (*NotifCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args 
 
 	text, err := syscall.UTF16FromString(data[0])
 	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, misc.ERROR_CONVERT, m.Reference())
 		return
 	}
 
 	title, err := syscall.UTF16FromString(data[1])
 	if err != nil {
-		s.ChannelMessageSendReply(m.ChannelID, notifConvertError, m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, misc.ERROR_CONVERT, m.Reference())
 		return
 	}
 
@@ -64,7 +63,7 @@ func (*NotifCommand) Name() string {
 }
 
 func (*NotifCommand) Info() string {
-	return "displays a messagebox"
+	return "displays a message box"
 }
 
 type NotifCommand struct{}
