@@ -29,7 +29,7 @@ func (*ListenCommand) Run(s *discordgo.Session, m *discordgo.MessageCreate, args
 	}
 
 	if len(args) != 2 {
-		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, bombArgsError, bombUsage), m.Reference())
+		s.ChannelMessageSendReply(m.ChannelID, fmt.Sprintf(misc.USAGE_F, listenArgsError, listenUsage), m.Reference())
 		return
 	}
 
