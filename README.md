@@ -1,8 +1,6 @@
 # Hypothermia
 An advance remote access tool fully controllable by a Discord bot.
 
-> ⚠️ **Discontinued:** Hypothermia is no longer under development or maintenance, for now...
-
 ## Building
 > ⚠️ **Notice:** This is not intended for the average user. Basic scripting knowledge is required.
 
